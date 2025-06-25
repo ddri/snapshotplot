@@ -5,7 +5,9 @@ Capture Python code, Matplotlib plots, and HTML documentation in one step with a
 Ever run into this?
 
 "Cool plot... where’s the code that made it?"
+"You made a mistake here, this other plot a few runs back was the correct one."
 "Uhh... I think I overwrote it... maybe version 12_final_final_really_final.py?"
+
 
 Yeah. Same.
 
@@ -19,7 +21,7 @@ Just wrap your code with the snapshot context manager and keep shipping.
 
 Because science shouldn't involve detective work.
 
-
+![SnapshotPlot HTML Output](assets/screenshot.png)
 
 ## Features
 
@@ -90,6 +92,19 @@ The HTML file contains:
 - **Syntax-highlighted code**: Your Python code with proper formatting
 - **Embedded plot**: The matplotlib figure directly in the HTML
 - **Clean styling**: Professional, readable layout
+
+## HTML Example
+
+Here's what the generated HTML documentation looks like:
+
+![SnapshotPlot HTML Output](assets/screenshot.png)
+
+The output includes:
+- **Dark mode interface** for easy reading
+- **Side-by-side layout** with code and plot
+- **Syntax-highlighted Python code**
+- **Embedded plot images**
+- **Responsive design** for mobile and desktop
 
 ## Configuration Options
 
