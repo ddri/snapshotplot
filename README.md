@@ -1,4 +1,4 @@
-# SnapshotPlot 📸📊
+# SnapShotPlot 📸📊
 
 Capture Python code, Matplotlib plots, and HTML documentation in one step with automatic timestamping and organization.
 
