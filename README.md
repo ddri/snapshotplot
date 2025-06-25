@@ -2,6 +2,25 @@
 
 Capture Python code, Matplotlib plots, and HTML documentation in one step with automatic timestamping and organization.
 
+Ever run into this?
+
+"Cool plot... where’s the code that made it?"
+"Uhh... I think I overwrote it... maybe version 12_final_final_really_final.py?"
+
+Yeah. Same.
+
+snapshotplot was born out of one too many late-night research plot reviews where the code was somewhere, but no one could say where. I got tired of asking "how did you generate this?" and getting blank stares.
+
+This package automatically takes a snapshot of your code and the plot every time you run it—HTML, code, and image saved, timestamped, and organized like a sane person lives here.
+
+You get reproducibility without thinking about it. Your future self (and your collaborators) will thank you.
+
+Just wrap your code with the snapshot context manager and keep shipping.
+
+Because science shouldn't involve detective work.
+
+
+
 ## Features
 
 - **🔄 Decorator & Context Manager Support**: Use as `@snapshot()` or `with snapshot():`
