@@ -4,7 +4,7 @@ Capture Python code, Matplotlib plots, and HTML documentation in one step with a
 
 Ever run into this?
 
-"Cool plot... where’s the code that made it?"
+"Cool plot... where's the code that made it?"
 "You made a mistake here, this other plot a few runs back was the correct one."
 "Uhh... I think I overwrote it... maybe version 12_final_final_really_final.py?"
 
@@ -82,9 +82,9 @@ Each snapshot creates a folder structure like this:
 
 ```
 snapshot_<filename>/
-├── code_20241201_143022_123456.py    # Raw source code
-├── plot_20241201_143022_123456.png   # Saved plot image
-└── snapshot_20241201_143022_123456.html  # HTML documentation
+├── 20241201_143022_123_code.py       # Raw source code
+├── 20241201_143022_123_plot.png      # Saved plot image
+└── 20241201_143022_123_snapshot.html # HTML documentation
 ```
 
 The HTML file contains:
