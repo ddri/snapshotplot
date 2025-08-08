@@ -15,6 +15,7 @@ import sys
 
 from .site_generator import SiteGenerator
 from .templates import get_template
+from .publisher import publish_snapshot, PublishConfig
 
 
 @click.group()
@@ -258,6 +259,49 @@ def list(collection: Optional[str], tag: Optional[str], author: Optional[str]):
     click.echo(f"Found {len(plots)} plots:")
     for plot in plots:
         click.echo(f"  📊 {plot['title']} ({plot['collection']}) - {plot['date']}")
+
+
+@cli.command()
+@click.argument('snapshot_dir')
+@click.option('--cloud-url', required=True, help='Cloud base URL, e.g., https://app.example.com')
+@click.option('--token', envvar='SNAPSHOTPLOT_TOKEN', required=True, help='API token (or set SNAPSHOTPLOT_TOKEN)')
+@click.option('--project-id', required=True, help='Cloud project identifier')
+@click.option('--collection', help='Collection name in the cloud project')
+@click.option('--title', help='Snapshot title override')
+@click.option('--author', help='Author metadata')
+@click.option('--description', help='Snapshot description')
+@click.option('--tags', multiple=True, help='Tags to attach to snapshot')
+@click.option('--repo-owner', help='GitHub repo owner (optional)')
+@click.option('--repo-name', help='GitHub repo name (optional)')
+@click.option('--commit-sha', help='Commit SHA (optional)')
+@click.option('--branch', help='Git branch (optional)')
+@click.option('--pr-number', type=int, help='Pull request number (optional)')
+def publish(snapshot_dir, cloud_url, token, project_id, collection, title, author, description, tags, repo_owner, repo_name, commit_sha, branch, pr_number):
+    """Publish a local snapshot directory to the cloud platform."""
+    try:
+        cfg = PublishConfig(
+            cloud_url=cloud_url,
+            token=token,
+            project_id=project_id,
+            collection=collection,
+            title=title,
+            author=author,
+            description=description,
+            tags=list(tags) if tags else [],
+            repo_owner=repo_owner,
+            repo_name=repo_name,
+            commit_sha=commit_sha,
+            branch=branch,
+            pr_number=pr_number,
+        )
+        urls = publish_snapshot(snapshot_dir, cfg)
+        click.echo("✅ Published snapshot")
+        if urls:
+            for k, v in urls.items():
+                click.echo(f"  {k}: {v}")
+    except Exception as e:
+        click.echo(f"❌ Publish failed: {e}")
+        sys.exit(1)
 
 
 def _create_templates(site_path: Path, template: str):
