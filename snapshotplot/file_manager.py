@@ -5,7 +5,6 @@ This module handles creating output directories, generating file names,
 and managing the file structure for snapshot outputs.
 """
 
-import os
 from pathlib import Path
 from typing import Optional
 
@@ -29,12 +28,12 @@ def create_output_directory(base_dir: str, filename: str) -> str:
     dir_name = f"snapshot_{filename}"
     
     # Create full path
-    output_dir = os.path.join(base_dir, dir_name)
+    output_dir = Path(base_dir) / dir_name
     
     # Create directory if it doesn't exist
-    os.makedirs(output_dir, exist_ok=True)
+    output_dir.mkdir(parents=True, exist_ok=True)
     
-    return output_dir
+    return str(output_dir)
 
 
 def generate_filename(extension: str, timestamp: str) -> str:
@@ -70,10 +69,11 @@ def get_file_paths(output_dir: str, filename: str, timestamp: str) -> dict:
     Returns:
         dict: Dictionary with paths for code, plot, and HTML files
     """
+    output_path = Path(output_dir)
     return {
-        'code': os.path.join(output_dir, generate_filename('py', timestamp)),
-        'plot': os.path.join(output_dir, generate_filename('png', timestamp)),
-        'html': os.path.join(output_dir, generate_filename('html', timestamp))
+        'code': str(output_path / generate_filename('py', timestamp)),
+        'plot': str(output_path / generate_filename('png', timestamp)),
+        'html': str(output_path / generate_filename('html', timestamp))
     }
 
 
@@ -84,7 +84,7 @@ def ensure_directory_exists(path: str) -> None:
     Args:
         path: Directory path to ensure exists
     """
-    os.makedirs(path, exist_ok=True)
+    Path(path).mkdir(parents=True, exist_ok=True)
 
 
 def get_relative_path(file_path: str, base_dir: str) -> str:
@@ -99,10 +99,10 @@ def get_relative_path(file_path: str, base_dir: str) -> str:
         str: Relative path
     """
     try:
-        return os.path.relpath(file_path, base_dir)
-    except ValueError:
-        # If on different drives (Windows), return absolute path
-        return file_path
+        return str(Path(file_path).resolve().relative_to(Path(base_dir).resolve()))
+    except Exception:
+        # If cannot be made relative (e.g., different drives), return absolute
+        return str(Path(file_path).resolve())
 
 
 def sanitize_filename(filename: str) -> str:
@@ -140,7 +140,7 @@ def get_default_output_dir() -> str:
     Returns:
         str: Default output directory path
     """
-    return os.path.join(os.getcwd(), 'snapshots')
+    return str(Path.cwd() / 'snapshots')
 
 
 def is_valid_path(path: str) -> bool:
