@@ -65,3 +65,5 @@ coverage.xml
 # Output folders
 snapshots/
 demo_outputs/ 
+# Cloud app local env
+cloud/app/.env.local
