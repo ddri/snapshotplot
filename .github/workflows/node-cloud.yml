@@ -1,0 +1,22 @@
+name: Cloud App Checks
+
+on:
+  push:
+    paths:
+      - 'cloud/**'
+  pull_request:
+    paths:
+      - 'cloud/**'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: List cloud files
+        run: |
+          ls -la cloud || true
+          ls -la cloud/app || true
+      - name: Validate package.json (if present)
+        run: |
+          if [ -f cloud/app/package.json ]; then cat cloud/app/package.json | jq .name; fi 
