@@ -27,6 +27,7 @@ from .utils import (
     validate_config,
     format_timestamp_for_display
 )
+from .publisher import PublishConfig, publish_snapshot  # optional cloud publish
 
 
 class SnapshotContext:
@@ -47,7 +48,16 @@ class SnapshotContext:
         description: Optional[str] = None,
         auto_commit: bool = False,
         auto_build: bool = False,
-        auto_deploy: bool = False
+        auto_deploy: bool = False,
+        # Cloud publish options (optional)
+        cloud_url: Optional[str] = None,
+        cloud_token: Optional[str] = None,
+        cloud_project_id: Optional[str] = None,
+        repo_owner: Optional[str] = None,
+        repo_name: Optional[str] = None,
+        commit_sha: Optional[str] = None,
+        branch: Optional[str] = None,
+        pr_number: Optional[int] = None,
     ):
         """
         Initialize the snapshot context manager.
@@ -66,6 +76,7 @@ class SnapshotContext:
             auto_commit: Automatically commit to git after snapshot
             auto_build: Automatically build static site after snapshot
             auto_deploy: Automatically deploy site after snapshot
+            cloud_url/cloud_token/cloud_project_id: When provided, publish snapshot to cloud
         """
         self.config = {
             'output_dir': output_dir,
@@ -80,7 +91,15 @@ class SnapshotContext:
             'description': description,
             'auto_commit': auto_commit,
             'auto_build': auto_build,
-            'auto_deploy': auto_deploy
+            'auto_deploy': auto_deploy,
+            'cloud_url': cloud_url,
+            'cloud_token': cloud_token,
+            'cloud_project_id': cloud_project_id,
+            'repo_owner': repo_owner,
+            'repo_name': repo_name,
+            'commit_sha': commit_sha,
+            'branch': branch,
+            'pr_number': pr_number,
         }
         
         # Validate and merge with defaults
@@ -91,6 +110,7 @@ class SnapshotContext:
         self.timestamp = None
         self.calling_info = None
         self.file_paths = None
+        self.snapshot_dir = None
         
     def __enter__(self):
         """Enter the context and prepare for snapshot capture."""
@@ -113,6 +133,7 @@ class SnapshotContext:
             self.calling_info['filename'],
             self.timestamp
         )
+        self.snapshot_dir = snapshot_dir
         
         return self
     
@@ -153,6 +174,9 @@ class SnapshotContext:
         
         if self.config.get('auto_deploy'):
             self._auto_deploy()
+        
+        # Optional: publish to cloud if configured
+        self._maybe_publish_to_cloud()
     
     def _save_source_code(self):
         """Save the source code to a file."""
@@ -306,6 +330,34 @@ class SnapshotContext:
         except Exception as e:
             import warnings
             warnings.warn(f"Failed to auto-deploy: {e}")
+
+    def _maybe_publish_to_cloud(self):
+        """Publish the snapshot to the cloud platform if cloud settings are provided."""
+        try:
+            cloud_url = self.config.get('cloud_url')
+            cloud_token = self.config.get('cloud_token')
+            cloud_project_id = self.config.get('cloud_project_id')
+            if not (cloud_url and cloud_token and cloud_project_id and self.snapshot_dir):
+                return
+            cfg = PublishConfig(
+                cloud_url=cloud_url,
+                token=cloud_token,
+                project_id=cloud_project_id,
+                collection=self.config.get('collection'),
+                title=self.config.get('title') or self.calling_info.get('function_name'),
+                author=self.config.get('author'),
+                description=self.config.get('description') or self.config.get('notes'),
+                tags=self.config.get('tags', []),
+                repo_owner=self.config.get('repo_owner'),
+                repo_name=self.config.get('repo_name'),
+                commit_sha=self.config.get('commit_sha'),
+                branch=self.config.get('branch'),
+                pr_number=self.config.get('pr_number'),
+            )
+            publish_snapshot(self.snapshot_dir, cfg)
+        except Exception as e:
+            import warnings
+            warnings.warn(f"Cloud publish failed: {e}")
 
 
 class SnapshotDecorator:
