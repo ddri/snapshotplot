@@ -47,10 +47,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/snapshotplot"
-Repository = "https://github.com/yourusername/snapshotplot"
-Documentation = "https://your-docs-url"
-Issues = "https://github.com/yourusername/snapshotplot/issues"
+Homepage = "https://github.com/amarchenkova/snapshotplot"
+Repository = "https://github.com/amarchenkova/snapshotplot"
+Documentation = "https://github.com/amarchenkova/snapshotplot#readme"
+Issues = "https://github.com/amarchenkova/snapshotplot/issues"
 
 [project.scripts]
 snapshotplot = "snapshotplot.cli:cli"
