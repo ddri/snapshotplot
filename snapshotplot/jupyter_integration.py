@@ -8,7 +8,7 @@ for capturing code cells, outputs, and plots in Jupyter environments.
 import os
 import sys
 from typing import Optional, Dict, Any
-from IPython.core.magic import Magics, magics_class, line_magic, cell_magic
+from IPython.core.magic import Magics, magics_class, line_cell_magic
 from IPython.core.magic_arguments import argument, magic_arguments, parse_argstring
 from IPython.display import display, HTML
 
@@ -48,14 +48,11 @@ def get_notebook_info() -> Dict[str, Any]:
             # Parse the kernel ID
             kernel_id = connection_file.split('-', 1)[1]
             
-            # Try to get notebook name from Jupyter server
+            # Try to get notebook name from Jupyter server (placeholder)
             try:
                 from notebook import notebookapp
                 servers = list(notebookapp.list_running_servers())
-                for server in servers:
-                    # This is a simplified approach - in practice you'd need to
-                    # query the server API to match kernel_id to notebook name
-                    pass
+                # Not implemented: map kernel_id to notebook path
             except ImportError:
                 pass
                 
@@ -74,7 +71,7 @@ def get_notebook_info() -> Dict[str, Any]:
 @magics_class
 class SnapshotMagics(Magics):
     """IPython magic commands for snapshotplot."""
-    
+
     @magic_arguments()
     @argument('-o', '--output-dir', help='Output directory for snapshots')
     @argument('-t', '--title', help='Title for the snapshot')
@@ -85,73 +82,49 @@ class SnapshotMagics(Magics):
     @argument('--collection', help='Collection name for organizing plots')
     @argument('--tags', nargs='*', help='Tags for categorizing plots')
     @argument('--description', help='Description for the plot')
-    @line_magic
-    def snapshot(self, line):
+    @line_cell_magic
+    def snapshot(self, line, cell=None):
         """
-        Line magic to snapshot the previous cell's output.
-        
-        Usage:
-            %snapshot -t "My Plot" -a "John Doe"
-        """
-        args = parse_argstring(self.snapshot, line)
-        
-        # Get the last executed cell
-        ipython = get_ipython()
-        history = list(ipython.history_manager.get_range(
-            ipython.history_manager.get_last_session_id(), 
-            start=-2, stop=-1
-        ))
-        
-        if not history:
-            print("No previous cell found to snapshot")
-            return
-        
-        _, _, cell_code = history[0]
-        
-        # Create snapshot for the previous cell
-        self._create_cell_snapshot(
-            cell_code=cell_code,
-            args=args,
-            cell_type='previous'
-        )
-    
-    @magic_arguments()
-    @argument('-o', '--output-dir', help='Output directory for snapshots')
-    @argument('-t', '--title', help='Title for the snapshot')
-    @argument('-a', '--author', help='Author name')
-    @argument('-n', '--notes', help='Additional notes')
-    @argument('--dpi', type=int, default=300, help='DPI for plots')
-    @argument('--site', help='Site directory for static site generation')
-    @argument('--collection', help='Collection name for organizing plots')
-    @argument('--tags', nargs='*', help='Tags for categorizing plots')
-    @argument('--description', help='Description for the plot')
-    @cell_magic
-    def snapshot(self, line, cell):
-        """
-        Cell magic to snapshot the current cell.
-        
-        Usage:
+        Line/cell magic to snapshot analysis.
+        - Cell form (preferred):
             %%snapshot -t "My Analysis" -a "John Doe"
-            import matplotlib.pyplot as plt
-            plt.plot([1, 2, 3], [1, 4, 9])
-            plt.show()
+            ...code...
+        - Line form (experimental):
+            %snapshot -t "My Plot" -a "John Doe"
+            Captures previous cell code/output.
         """
         args = parse_argstring(self.snapshot, line)
-        
-        # Execute the cell first
+
+        from IPython import get_ipython
         ipython = get_ipython()
-        result = ipython.run_cell(cell)
-        
-        # Create snapshot after execution
-        if result.success:
+
+        if cell is None:
+            # Line magic: snapshot previous cell
+            history = list(ipython.history_manager.get_range(
+                ipython.history_manager.get_last_session_id(),
+                start=-2, stop=-1
+            ))
+            if not history:
+                print("No previous cell found to snapshot")
+                return
+            _, _, cell_code = history[0]
             self._create_cell_snapshot(
-                cell_code=cell,
+                cell_code=cell_code,
                 args=args,
-                cell_type='current'
+                cell_type='previous'
             )
         else:
-            print("Cell execution failed, snapshot not created")
-    
+            # Cell magic: execute then snapshot
+            result = ipython.run_cell(cell)
+            if result.success:
+                self._create_cell_snapshot(
+                    cell_code=cell,
+                    args=args,
+                    cell_type='current'
+                )
+            else:
+                print("Cell execution failed, snapshot not created")
+
     def _create_cell_snapshot(self, cell_code: str, args, cell_type: str):
         """Create a snapshot for a notebook cell."""
         # Get notebook info
@@ -230,7 +203,8 @@ class SnapshotMagics(Magics):
 
 def load_ipython_extension(ipython):
     """Load the IPython extension."""
-    ipython.register_magic_function(SnapshotMagics(ipython).snapshot, 'line_cell')
+    # Register full Magics class to provide line/cell magic in one
+    ipython.register_magics(SnapshotMagics)
 
 
 def unload_ipython_extension(ipython):
@@ -266,12 +240,6 @@ class NotebookSnapshot(SnapshotContext):
         try:
             from IPython import get_ipython
             ipython = get_ipython()
-            
-            # Get the current cell's input
-            # This is a simplified approach - in practice you might need
-            # more sophisticated cell tracking
-            if hasattr(ipython, 'user_ns') and '__code__' in ipython.user_ns:
-                return ipython.user_ns['__code__']
             
             # Fallback to last input
             return ipython.history_manager.input_hist_parsed[-1]
