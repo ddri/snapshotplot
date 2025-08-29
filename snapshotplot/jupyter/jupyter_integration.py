@@ -12,11 +12,11 @@ from IPython.core.magic import Magics, magics_class, line_magic, cell_magic
 from IPython.core.magic_arguments import argument, magic_arguments, parse_argstring
 from IPython.display import display, HTML
 
-from .snapshot import SnapshotContext
-from .timestamp import get_timestamp
-from .file_manager import create_output_directory, get_file_paths, get_default_output_dir
-from .html_writer import create_html_snapshot
-from .utils import save_current_plot, has_active_figure, format_timestamp_for_display
+from ..core.snapshot import SnapshotContext
+from ..core.timestamp import get_timestamp
+from ..core.file_manager import create_output_directory, get_file_paths, get_default_output_dir
+from ..core.html_writer import create_html_snapshot
+from ..core.utils import save_current_plot, has_active_figure, format_timestamp_for_display
 
 
 def is_notebook() -> bool:

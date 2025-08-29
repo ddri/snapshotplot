@@ -32,12 +32,32 @@ Because science shouldn't involve detective work.
 - **🔧 Zero Configuration**: Works out of the box with sensible defaults
 - **🚀 Non-Intrusive**: Runs silently in the background
 
+## Modular Architecture
+
+SnapshotPlot is designed around four distinct user workflows, each building on the previous one. You can start simple and add features as your needs grow.
+
+**The Design:** Instead of one complex package, SnapshotPlot has modular components (`core/`, `jupyter/`, `site/`, `cli/`) with optional dependencies. Users install exactly what they need, eliminating dependency bloat while providing a natural upgrade path.
+
+**Progressive Adoption:** Solo researchers start with basic plot capture, data science teams add Jupyter magic commands, research organizations enable publication websites, and DevOps teams integrate automation tools. Each workflow builds naturally on the previous one.
+
 ## Quick Start
 
-### Installation
+### Installation Options
+
+Choose your workflow and install the appropriate features:
 
 ```bash
+# Workflow 1: Solo Researcher (Core Only)
 pip install snapshotplot
+
+# Workflow 2: Data Science Team (Core + Jupyter)  
+pip install snapshotplot[jupyter]
+
+# Workflow 3: Research Organization (Core + Site Generator)
+pip install snapshotplot[site]
+
+# Workflow 4: DevOps/Automation (All Features)
+pip install snapshotplot[all]
 ```
 
 ### Basic Usage
@@ -417,12 +437,29 @@ else:
 5. **Team Consistency**: Establish naming conventions for titles, authors, and tags
 6. **Regular Review**: Generated HTML files are perfect for team reviews and presentations
 
+## Workflow Details
+
+See [USER_WORKFLOWS.md](USER_WORKFLOWS.md) for detailed examples and use cases for each workflow.
+
+| Workflow | Installation | Use Case | Features |
+|----------|-------------|----------|----------|
+| Solo Researcher | `pip install snapshotplot` | Personal analysis documentation | Basic capture, HTML docs |
+| Data Science Team | `pip install snapshotplot[jupyter]` | Collaborative Jupyter workflows | + Magic commands, metadata |
+| Research Organization | `pip install snapshotplot[site]` | Publication websites | + Site generation, deployment |
+| DevOps/Automation | `pip install snapshotplot[all]` | CI/CD integration | + Command line tools |
+
 ## Requirements
 
-- Python 3.8+
-- matplotlib >= 3.5.0
-- jinja2 >= 3.0.0
-- pygments >= 2.10.0
+**Core Dependencies:**
+- Python 3.9+
+- matplotlib >= 3.7.0
+- jinja2 >= 3.1.0
+- pygments >= 2.15.0
+
+**Optional Dependencies:**
+- `[jupyter]`: IPython >= 8.0.0, notebook >= 6.0.0
+- `[site]`: GitPython >= 3.1.0, watchdog >= 2.1.0  
+- `[cli]`: rich >= 12.0.0
 
 ## Development
 

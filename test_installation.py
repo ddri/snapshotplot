@@ -18,11 +18,11 @@ def test_imports():
         return False
     
     try:
-        from snapshotplot.timestamp import get_timestamp
-        from snapshotplot.code_capture import get_calling_info
-        from snapshotplot.file_manager import create_output_directory
-        from snapshotplot.html_writer import generate_html
-        from snapshotplot.utils import save_current_plot
+        from snapshotplot.core.timestamp import get_timestamp
+        from snapshotplot.core.code_capture import get_calling_info
+        from snapshotplot.core.file_manager import create_output_directory
+        from snapshotplot.core.html_writer import generate_html
+        from snapshotplot.core.utils import save_current_plot
         print("✅ All submodules import successful")
     except ImportError as e:
         print(f"❌ Submodule import failed: {e}")
@@ -36,8 +36,8 @@ def test_basic_functionality():
     print("\nTesting basic functionality...")
     
     try:
-        from snapshotplot.timestamp import get_timestamp, reset_timestamp
-        from snapshotplot.code_capture import get_calling_info
+        from snapshotplot.core.timestamp import get_timestamp, reset_timestamp
+        from snapshotplot.core.code_capture import get_calling_info
         
         # Test timestamp
         reset_timestamp()

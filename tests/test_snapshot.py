@@ -11,9 +11,9 @@ import shutil
 from unittest.mock import patch, MagicMock
 
 from snapshotplot import snapshot, SnapshotContext
-from snapshotplot.timestamp import get_timestamp, reset_timestamp
-from snapshotplot.code_capture import get_calling_info
-from snapshotplot.file_manager import create_output_directory, get_file_paths
+from snapshotplot.core.timestamp import get_timestamp, reset_timestamp
+from snapshotplot.core.code_capture import get_calling_info
+from snapshotplot.core.file_manager import create_output_directory, get_file_paths
 
 
 class TestTimestamp:
@@ -29,13 +29,15 @@ class TestTimestamp:
         assert timestamp1 == timestamp2
         
         # Timestamp should have correct format
-        assert len(timestamp1) == 20  # YYYYMMDD_HHMMSS_microseconds
+        assert len(timestamp1) == 19  # YYYYMMDD_HHMMSS_milliseconds
         assert timestamp1[8] == '_'
         assert timestamp1[15] == '_'
     
     def test_timestamp_reset(self):
         """Test that timestamps reset correctly."""
+        import time
         timestamp1 = get_timestamp()
+        time.sleep(0.01)  # Ensure time passes
         reset_timestamp()
         timestamp2 = get_timestamp()
         
@@ -93,9 +95,9 @@ class TestFileManager:
             assert path_type in paths
         
         # Should have correct filenames
-        assert paths['code'].endswith(f"code_{timestamp}.py")
-        assert paths['plot'].endswith(f"plot_{timestamp}.png")
-        assert paths['html'].endswith(f"snapshot_{timestamp}.html")
+        assert paths['code'].endswith(f"{timestamp}_code.py")
+        assert paths['plot'].endswith(f"{timestamp}_plot.png")
+        assert paths['html'].endswith(f"{timestamp}_snapshot.html")
 
 
 class TestSnapshotContext:

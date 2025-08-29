@@ -13,8 +13,8 @@ from datetime import datetime
 import subprocess
 import sys
 
-from .site_generator import SiteGenerator
-from .templates import get_template
+from ..site.site_generator import SiteGenerator
+from ..core.templates import get_template
 
 
 @click.group()
@@ -321,7 +321,7 @@ jobs:
 def _create_assets(site_path: Path):
     """Create basic CSS and assets."""
     # Use the dark mode theme from templates
-    from .templates import get_template
+    from ..core.templates import get_template
     templates = get_template('scientific')
     css = templates['assets/style.css']
     
