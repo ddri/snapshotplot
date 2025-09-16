@@ -41,13 +41,22 @@ dependencies = [
 jupyter = [
     "ipython>=8.0.0",
     "notebook>=6.0.0",
+    "plotly>=5.0.0",
+    "altair>=5.0.0",
 ]
 site = [
     "gitpython>=3.1.0",
     "watchdog>=2.1.0",
+    "weasyprint>=60.0",
 ]
 cli = [
     "rich>=12.0.0",
+]
+search = [
+    "sqlalchemy>=2.0.0",
+]
+academic = [
+    "weasyprint>=60.0",
 ]
 dev = [
     "pytest>=7.0.0",
@@ -57,7 +66,7 @@ dev = [
     "mypy>=1.0.0",
 ]
 all = [
-    "snapshotplot[jupyter,site,cli]",
+    "snapshotplot[jupyter,site,cli,search,academic]",
 ]
 
 [project.urls]

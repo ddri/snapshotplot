@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Static Site Generation - SnapshotPlot</title>
+    <link rel="stylesheet" href="/assets/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <header>
+    <div class="container">
+        <div class="header-content">
+            <a href="/" class="logo">SnapshotPlot</a>
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Search plots, code, tags..." />
+                <div id="search-results" class="search-results-dropdown"></div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    
+                        <li><a href="/experiments/">ML Experiments</a></li>
+                    
+                        <li><a href="/visualizations/">Data Visualizations</a></li>
+                    
+                    <li class="nav-divider">|</li>
+                    <li><a href="/getting-started/">Get Started</a></li>
+                    <li><a href="/examples/">Examples</a></li>
+                    <li><a href="/jupyter/">Jupyter</a></li>
+                    <li><a href="/static-sites/">Sites</a></li>
+                    <li><a href="/search/">Search</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header>
+    
+    <main class="container">
+        
+            <h1>Static Site Generation</h1>
+<p>SnapshotPlot can automatically generate beautiful, searchable static websites from your analysis snapshots. Perfect for research teams, documentation, and sharing insights with stakeholders.</p>
+<h2>Quick Start</h2>
+<h3>Basic Site Generation</h3>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">snapshotplot.site.site_generator</span><span class="w"> </span><span class="kn">import</span> <span class="n">SiteGenerator</span>
+
+<span class="c1"># Generate a site from your snapshots</span>
+<span class="n">generator</span> <span class="o">=</span> <span class="n">SiteGenerator</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+<span class="n">generator</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="s1">&#39;docs&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+
+<h3>Automatic Site Integration</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Configure snapshots to automatically update your site</span>
+<span class="nd">@snapshot</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Sales Analysis Q4&quot;</span><span class="p">,</span>
+    <span class="n">author</span><span class="o">=</span><span class="s2">&quot;Data Team&quot;</span><span class="p">,</span>
+    <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;sales&quot;</span><span class="p">,</span> <span class="s2">&quot;quarterly&quot;</span><span class="p">],</span>
+    <span class="n">site</span><span class="o">=</span><span class="s2">&quot;./my-research-site&quot;</span><span class="p">,</span>
+    <span class="n">collection</span><span class="o">=</span><span class="s2">&quot;quarterly-reports&quot;</span><span class="p">,</span>
+    <span class="n">auto_build</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">quarterly_analysis</span><span class="p">():</span>
+    <span class="c1"># Your analysis code</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">([</span><span class="s1">&#39;Q1&#39;</span><span class="p">,</span> <span class="s1">&#39;Q2&#39;</span><span class="p">,</span> <span class="s1">&#39;Q3&#39;</span><span class="p">,</span> <span class="s1">&#39;Q4&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">115</span><span class="p">,</span> <span class="mi">140</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Quarterly Sales Growth&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+
+<h2>Site Structure</h2>
+<p>SnapshotPlot generates organized static sites with this structure:</p>
+<div class="codehilite"><pre><span></span><code>docs/                          # Generated site
+├── index.html                 # Homepage with plot gallery
+├── collections/
+│   ├── experiments/          # Collection pages
+│   │   ├── index.html        # Collection overview
+│   │   └── plot-name/
+│   │       └── index.html    # Individual plot page
+│   └── visualizations/
+├── assets/
+│   ├── css/                  # Responsive styling
+│   ├── js/                   # Search functionality
+│   └── images/               # Plot images and thumbnails
+└── search.html               # Dedicated search page
+</code></pre></div>
+
+<h2>Features</h2>
+<h3>🔍 Client-Side Search</h3>
+<ul>
+<li><strong>Instant Results</strong>: No server required, works offline</li>
+<li><strong>Smart Scoring</strong>: Relevance-based ranking with keyword highlighting</li>
+<li><strong>Multiple Fields</strong>: Search titles, descriptions, tags, and content</li>
+<li><strong>Mobile Optimized</strong>: Touch-friendly interface</li>
+</ul>
+<h3>🎨 Modern Design</h3>
+<ul>
+<li><strong>GitHub-Inspired</strong>: Clean, professional appearance</li>
+<li><strong>Responsive Layout</strong>: Works on all devices</li>
+<li><strong>Dark Mode Ready</strong>: Easy on the eyes</li>
+<li><strong>Fast Loading</strong>: Optimized assets and lazy loading</li>
+</ul>
+<h3>📁 Smart Organization</h3>
+<ul>
+<li><strong>Collections</strong>: Group related analyses together</li>
+<li><strong>Automatic Tagging</strong>: Visual tag system with colors</li>
+<li><strong>Chronological Sorting</strong>: Latest analyses first</li>
+<li><strong>Metadata Rich</strong>: Author, date, description display</li>
+</ul>
+<h2>Configuration</h2>
+<h3>Site Generator Options</h3>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">snapshotplot.site.site_generator</span><span class="w"> </span><span class="kn">import</span> <span class="n">SiteGenerator</span>
+
+<span class="n">generator</span> <span class="o">=</span> <span class="n">SiteGenerator</span><span class="p">(</span>
+    <span class="n">snapshot_dir</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span>           <span class="c1"># Directory containing snapshots</span>
+    <span class="n">site_title</span><span class="o">=</span><span class="s1">&#39;Research Lab&#39;</span><span class="p">,</span>  <span class="c1"># Site title</span>
+    <span class="n">site_description</span><span class="o">=</span><span class="s1">&#39;Our latest research findings&#39;</span><span class="p">,</span>
+    <span class="n">author</span><span class="o">=</span><span class="s1">&#39;Research Team&#39;</span><span class="p">,</span>
+    <span class="n">base_url</span><span class="o">=</span><span class="s1">&#39;https://research.example.com&#39;</span>
+<span class="p">)</span>
+
+<span class="n">generator</span><span class="o">.</span><span class="n">build</span><span class="p">(</span>
+    <span class="n">output_dir</span><span class="o">=</span><span class="s1">&#39;docs&#39;</span><span class="p">,</span>          <span class="c1"># Output directory</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>               <span class="c1"># Show build progress</span>
+    <span class="n">clean</span><span class="o">=</span><span class="kc">True</span>                  <span class="c1"># Clean output dir first</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<h3>Snapshot Integration</h3>
+<div class="codehilite"><pre><span></span><code><span class="nd">@snapshot</span><span class="p">(</span>
+    <span class="c1"># Site configuration</span>
+    <span class="n">site</span><span class="o">=</span><span class="s2">&quot;./my-site&quot;</span><span class="p">,</span>                    <span class="c1"># Site directory</span>
+    <span class="n">collection</span><span class="o">=</span><span class="s2">&quot;experiments&quot;</span><span class="p">,</span>           <span class="c1"># Collection name</span>
+    <span class="n">auto_build</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>                    <span class="c1"># Rebuild site after snapshot</span>
+
+    <span class="c1"># Content metadata</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Customer Segmentation&quot;</span><span class="p">,</span>
+    <span class="n">author</span><span class="o">=</span><span class="s2">&quot;ML Team&quot;</span><span class="p">,</span>
+    <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;clustering&quot;</span><span class="p">,</span> <span class="s2">&quot;customers&quot;</span><span class="p">],</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;K-means clustering analysis of customer behavior&quot;</span><span class="p">,</span>
+
+    <span class="c1"># Export options</span>
+    <span class="n">export_formats</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;html&quot;</span><span class="p">,</span> <span class="s2">&quot;markdown&quot;</span><span class="p">],</span> <span class="c1"># Include markdown for site</span>
+    <span class="n">enable_search</span><span class="o">=</span><span class="kc">True</span>                   <span class="c1"># Add to search index</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">customer_analysis</span><span class="p">():</span>
+    <span class="c1"># Your analysis code</span>
+    <span class="k">pass</span>
+</code></pre></div>
+
+<h2>Collections</h2>
+<p>Collections help organize related analyses. Common patterns:</p>
+<h3>Research Collections</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Experiments collection</span>
+<span class="nd">@snapshot</span><span class="p">(</span><span class="n">collection</span><span class="o">=</span><span class="s2">&quot;experiments&quot;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;research&quot;</span><span class="p">,</span> <span class="s2">&quot;ml&quot;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">experiment_1</span><span class="p">():</span>
+    <span class="k">pass</span>
+
+<span class="c1"># Visualizations collection  </span>
+<span class="nd">@snapshot</span><span class="p">(</span><span class="n">collection</span><span class="o">=</span><span class="s2">&quot;visualizations&quot;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;eda&quot;</span><span class="p">,</span> <span class="s2">&quot;plots&quot;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">data_exploration</span><span class="p">():</span>
+    <span class="k">pass</span>
+
+<span class="c1"># Reports collection</span>
+<span class="nd">@snapshot</span><span class="p">(</span><span class="n">collection</span><span class="o">=</span><span class="s2">&quot;reports&quot;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;business&quot;</span><span class="p">,</span> <span class="s2">&quot;quarterly&quot;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">quarterly_report</span><span class="p">():</span>
+    <span class="k">pass</span>
+</code></pre></div>
+
+<h3>Team Collections</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># By team</span>
+<span class="nd">@snapshot</span><span class="p">(</span><span class="n">collection</span><span class="o">=</span><span class="s2">&quot;data-science&quot;</span><span class="p">,</span> <span class="n">author</span><span class="o">=</span><span class="s2">&quot;DS Team&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ml_analysis</span><span class="p">():</span>
+    <span class="k">pass</span>
+
+<span class="nd">@snapshot</span><span class="p">(</span><span class="n">collection</span><span class="o">=</span><span class="s2">&quot;product&quot;</span><span class="p">,</span> <span class="n">author</span><span class="o">=</span><span class="s2">&quot;Product Team&quot;</span><span class="p">)</span>  
+<span class="k">def</span><span class="w"> </span><span class="nf">feature_analysis</span><span class="p">():</span>
+    <span class="k">pass</span>
+
+<span class="c1"># By project</span>
+<span class="nd">@snapshot</span><span class="p">(</span><span class="n">collection</span><span class="o">=</span><span class="s2">&quot;project-alpha&quot;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;alpha&quot;</span><span class="p">,</span> <span class="s2">&quot;prototype&quot;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">alpha_metrics</span><span class="p">():</span>
+    <span class="k">pass</span>
+</code></pre></div>
+
+<h2>Search Functionality</h2>
+<h3>Search Index Generation</h3>
+<p>The site generator automatically creates a search index:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// Generated search-index.json</span>
+<span class="p">[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;analysis-id&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;title&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Customer Segmentation&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;description&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;K-means clustering analysis&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;author&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Data Team&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;tags&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;clustering&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ml&quot;</span><span class="p">],</span>
+<span class="w">    </span><span class="s2">&quot;collection&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;experiments&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;date&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;2024-07-18&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;url&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;/experiments/customer-segmentation/&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;keywords&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;customer&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;segments&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;clusters&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">]</span>
+</code></pre></div>
+
+<h3>Search Features</h3>
+<ul>
+<li><strong>Fuzzy Matching</strong>: Finds results even with typos</li>
+<li><strong>Tag Filtering</strong>: Click tags to filter results</li>
+<li><strong>Keyboard Navigation</strong>: Arrow keys and Enter</li>
+<li><strong>URL Integration</strong>: Shareable search URLs</li>
+<li><strong>Result Highlighting</strong>: Matched terms highlighted</li>
+</ul>
+<h2>Deployment</h2>
+<h3>GitHub Pages</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># .github/workflows/deploy.yml</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deploy Site</span>
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">main</span><span class="w"> </span><span class="p p-Indicator">]</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">deploy</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v2</span>
+
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Setup Python</span>
+<span class="w">      </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/setup-python@v2</span>
+<span class="w">      </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3.9</span>
+
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install dependencies</span>
+<span class="w">      </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">pip install snapshotplot[site]</span>
+
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Build site</span>
+<span class="w">      </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">python -c &quot;</span>
+<span class="w">        </span><span class="no">from snapshotplot.site.site_generator import SiteGenerator</span>
+<span class="w">        </span><span class="no">gen = SiteGenerator(&#39;.&#39;)</span>
+<span class="w">        </span><span class="no">gen.build(&#39;docs&#39;, verbose=True)</span>
+<span class="w">        </span><span class="no">&quot;</span>
+
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deploy to GitHub Pages</span>
+<span class="w">      </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">peaceiris/actions-gh-pages@v3</span>
+<span class="w">      </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">github_token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GITHUB_TOKEN }}</span>
+<span class="w">        </span><span class="nt">publish_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./docs</span>
+</code></pre></div>
+
+<h3>Netlify</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># netlify.toml</span>
+<span class="k">[build]</span>
+<span class="w">  </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;pip install snapshotplot[site] &amp;&amp; python build_site.py&quot;</span>
+<span class="w">  </span><span class="n">publish</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;docs&quot;</span>
+
+<span class="k">[build.environment]</span>
+<span class="w">  </span><span class="n">PYTHON_VERSION</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;3.9&quot;</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="c1"># build_site.py</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">snapshotplot.site.site_generator</span><span class="w"> </span><span class="kn">import</span> <span class="n">SiteGenerator</span>
+
+<span class="n">generator</span> <span class="o">=</span> <span class="n">SiteGenerator</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+<span class="n">generator</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="s1">&#39;docs&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+
+<h3>Custom Domain</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Configure custom domain</span>
+<span class="n">generator</span> <span class="o">=</span> <span class="n">SiteGenerator</span><span class="p">(</span>
+    <span class="s1">&#39;.&#39;</span><span class="p">,</span>
+    <span class="n">base_url</span><span class="o">=</span><span class="s1">&#39;https://research.yourcompany.com&#39;</span><span class="p">,</span>
+    <span class="n">site_title</span><span class="o">=</span><span class="s1">&#39;Company Research Lab&#39;</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<h2>Customization</h2>
+<h3>Custom Templates</h3>
+<p>Override default templates by creating <code>_layouts/</code> directory:</p>
+<div class="codehilite"><pre><span></span><code><span class="cm">&lt;!-- _layouts/default.html --&gt;</span>
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>{{ site.title }} - {{ page.title }}<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+    <span class="cm">&lt;!-- Your custom CSS --&gt;</span>
+<span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+    <span class="cm">&lt;!-- Your custom header --&gt;</span>
+    {{ content }}
+    <span class="cm">&lt;!-- Your custom footer --&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<h3>Custom Styling</h3>
+<div class="codehilite"><pre><span></span><code><span class="c">/* assets/css/custom.css */</span>
+<span class="p">:</span><span class="nd">root</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">--primary-color</span><span class="p">:</span><span class="w"> </span><span class="mh">#your</span><span class="o">-</span><span class="n">brand-color</span><span class="p">;</span>
+<span class="w">    </span><span class="nv">--background-color</span><span class="p">:</span><span class="w"> </span><span class="mh">#your</span><span class="o">-</span><span class="n">bg-color</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="p">.</span><span class="nc">plot-card</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">border</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="kt">px</span><span class="w"> </span><span class="kc">solid</span><span class="w"> </span><span class="nf">var</span><span class="p">(</span><span class="nv">--primary-color</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3>Custom Collections</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Define custom collection templates</span>
+<span class="n">collections</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;experiments&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;Research Experiments&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Our latest research findings&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;icon&#39;</span><span class="p">:</span> <span class="s1">&#39;🔬&#39;</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;reports&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;Business Reports&#39;</span><span class="p">,</span> 
+        <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Quarterly and annual reports&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;icon&#39;</span><span class="p">:</span> <span class="s1">&#39;📊&#39;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">generator</span> <span class="o">=</span> <span class="n">SiteGenerator</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">collections</span><span class="o">=</span><span class="n">collections</span><span class="p">)</span>
+</code></pre></div>
+
+<h2>Performance Optimization</h2>
+<h3>Image Optimization</h3>
+<div class="codehilite"><pre><span></span><code><span class="nd">@snapshot</span><span class="p">(</span>
+    <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span>                    <span class="c1"># Reasonable resolution</span>
+    <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;webp&#39;</span><span class="p">,</span>              <span class="c1"># Modern image format</span>
+    <span class="n">optimize_images</span><span class="o">=</span><span class="kc">True</span>        <span class="c1"># Enable compression</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">analysis</span><span class="p">():</span>
+    <span class="k">pass</span>
+</code></pre></div>
+
+<h3>Build Optimization</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Incremental builds - only rebuild changed plots</span>
+<span class="n">generator</span><span class="o">.</span><span class="n">build</span><span class="p">(</span>
+    <span class="s1">&#39;docs&#39;</span><span class="p">,</span>
+    <span class="n">incremental</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>           <span class="c1"># Only update changed files</span>
+    <span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>              <span class="c1"># Use multiple cores</span>
+    <span class="n">compress_assets</span><span class="o">=</span><span class="kc">True</span>        <span class="c1"># Minify CSS/JS</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<h2>Analytics Integration</h2>
+<h3>Google Analytics</h3>
+<div class="codehilite"><pre><span></span><code><span class="cm">&lt;!-- _layouts/default.html --&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">async</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="nb">window</span><span class="p">.</span><span class="nx">dataLayer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">window</span><span class="p">.</span><span class="nx">dataLayer</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">[];</span>
+<span class="w">  </span><span class="kd">function</span><span class="w"> </span><span class="nx">gtag</span><span class="p">(){</span><span class="nx">dataLayer</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);}</span>
+<span class="w">  </span><span class="nx">gtag</span><span class="p">(</span><span class="s1">&#39;js&#39;</span><span class="p">,</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Date</span><span class="p">());</span>
+<span class="w">  </span><span class="nx">gtag</span><span class="p">(</span><span class="s1">&#39;config&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;GA_MEASUREMENT_ID&#39;</span><span class="p">);</span>
+<span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<h3>Custom Analytics</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1">// Track search usage</span>
+<span class="nb">document</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;search&#39;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Your analytics code</span>
+<span class="w">    </span><span class="nx">analytics</span><span class="p">.</span><span class="nx">track</span><span class="p">(</span><span class="s1">&#39;site_search&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">query</span><span class="o">:</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">detail</span><span class="p">.</span><span class="nx">query</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">results</span><span class="o">:</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">detail</span><span class="p">.</span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="p">});</span>
+</code></pre></div>
+
+<h2>Best Practices</h2>
+<h3>Content Organization</h3>
+<ul>
+<li><strong>Consistent Collections</strong>: Use standardized collection names</li>
+<li><strong>Descriptive Titles</strong>: Make titles searchable and clear</li>
+<li><strong>Rich Metadata</strong>: Include author, tags, and descriptions</li>
+<li><strong>Regular Builds</strong>: Set up automated rebuilds</li>
+</ul>
+<h3>SEO Optimization</h3>
+<ul>
+<li><strong>Meta Tags</strong>: Include descriptions and keywords</li>
+<li><strong>Semantic HTML</strong>: Use proper heading structure</li>
+<li><strong>Sitemap</strong>: Auto-generated for search engines</li>
+<li><strong>Fast Loading</strong>: Optimized images and assets</li>
+</ul>
+<h3>Team Workflow</h3>
+<ul>
+<li><strong>Naming Conventions</strong>: Agree on collection and tag standards</li>
+<li><strong>Review Process</strong>: Use site for team reviews</li>
+<li><strong>Documentation</strong>: Keep analysis context in descriptions</li>
+<li><strong>Version Control</strong>: Include generated sites in git</li>
+</ul>
+<h2>Troubleshooting</h2>
+<h3>Build Failures</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Check for missing dependencies</span>
+pip<span class="w"> </span>install<span class="w"> </span>snapshotplot<span class="o">[</span>site<span class="o">]</span>
+
+<span class="c1"># Verify file permissions</span>
+chmod<span class="w"> </span>-R<span class="w"> </span><span class="m">755</span><span class="w"> </span>docs/
+
+<span class="c1"># Clean build</span>
+rm<span class="w"> </span>-rf<span class="w"> </span>docs/<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>python<span class="w"> </span>build_site.py
+</code></pre></div>
+
+<h3>Search Not Working</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Verify search index exists</span>
+ls<span class="w"> </span>docs/assets/js/search-index.json
+
+<span class="c1"># Check JavaScript console for errors</span>
+<span class="c1"># Ensure valid JSON in search index</span>
+</code></pre></div>
+
+<h3>Deployment Issues</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Test local server</span>
+<span class="nb">cd</span><span class="w"> </span>docs<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8000</span>
+
+<span class="c1"># Check base URL configuration</span>
+<span class="c1"># Verify asset paths are relative</span>
+</code></pre></div>
+
+<p>Static site generation makes your research accessible, searchable, and professional. It's perfect for sharing insights with stakeholders, maintaining team documentation, and building a knowledge base of your analytical work.</p>
+        
+    </main>
+    
+    <footer>
+    <div class="container">
+        <p>&copy; Data Science Team - Generated with SnapshotPlot</p>
+        
+    </div>
+</footer>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="/assets/js/search.js"></script>
+</body>
+</html>

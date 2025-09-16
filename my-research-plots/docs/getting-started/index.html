@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Getting Started with SnapshotPlot - SnapshotPlot</title>
+    <link rel="stylesheet" href="/assets/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <header>
+    <div class="container">
+        <div class="header-content">
+            <a href="/" class="logo">SnapshotPlot</a>
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Search plots, code, tags..." />
+                <div id="search-results" class="search-results-dropdown"></div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    
+                        <li><a href="/experiments/">ML Experiments</a></li>
+                    
+                        <li><a href="/visualizations/">Data Visualizations</a></li>
+                    
+                    <li class="nav-divider">|</li>
+                    <li><a href="/getting-started/">Get Started</a></li>
+                    <li><a href="/examples/">Examples</a></li>
+                    <li><a href="/jupyter/">Jupyter</a></li>
+                    <li><a href="/static-sites/">Sites</a></li>
+                    <li><a href="/search/">Search</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header>
+    
+    <main class="container">
+        
+            <h1>Getting Started with SnapshotPlot</h1>
+<p>SnapshotPlot automatically captures your Python code, visualizations, and documentation in one step with automatic timestamping and organization.</p>
+<h2>Quick Start</h2>
+<h3>Installation</h3>
+<p>Choose your workflow and install the appropriate features:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Solo Researcher (Core Only)</span>
+pip<span class="w"> </span>install<span class="w"> </span>snapshotplot
+
+<span class="c1"># Data Science Team (Core + Jupyter + Multi-library support)  </span>
+pip<span class="w"> </span>install<span class="w"> </span>snapshotplot<span class="o">[</span>jupyter<span class="o">]</span>
+
+<span class="c1"># Research Organization (Core + Site Generator + Export formats)</span>
+pip<span class="w"> </span>install<span class="w"> </span>snapshotplot<span class="o">[</span>site<span class="o">]</span>
+
+<span class="c1"># All Features</span>
+pip<span class="w"> </span>install<span class="w"> </span>snapshotplot<span class="o">[</span>all<span class="o">]</span>
+</code></pre></div>
+
+<h3>Basic Usage</h3>
+<h4>As a Decorator</h4>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">snapshotplot</span><span class="w"> </span><span class="kn">import</span> <span class="n">snapshot</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="nd">@snapshot</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_sine_wave</span><span class="p">():</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Sine Wave&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">create_sine_wave</span><span class="p">()</span>
+</code></pre></div>
+
+<h4>As a Context Manager</h4>
+<div class="codehilite"><pre><span></span><code><span class="k">with</span> <span class="n">snapshot</span><span class="p">():</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Quadratic Function&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;y = x²&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+
+<h2>Enhanced Features</h2>
+<h3>Multiple Visualization Libraries</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Use Plotly for interactive visualizations</span>
+<span class="nd">@snapshot</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s1">&#39;plotly&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Interactive Analysis&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_interactive_plot</span><span class="p">():</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">plotly.graph_objects</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">go</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">go</span><span class="o">.</span><span class="n">Bar</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]))</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># Use Altair for statistical visualizations</span>
+<span class="nd">@snapshot</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s1">&#39;altair&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Statistical Visualization&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_altair_plot</span><span class="p">():</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">altair</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">alt</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]})</span>
+    <span class="n">chart</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">mark_circle</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
+    <span class="n">chart</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+
+<h3>Multiple Export Formats</h3>
+<div class="codehilite"><pre><span></span><code><span class="nd">@snapshot</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Research Results&#39;</span><span class="p">,</span>
+    <span class="n">export_formats</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;html&#39;</span><span class="p">,</span> <span class="s1">&#39;pdf&#39;</span><span class="p">,</span> <span class="s1">&#39;markdown&#39;</span><span class="p">],</span>
+    <span class="n">author</span><span class="o">=</span><span class="s1">&#39;Research Team&#39;</span><span class="p">,</span>
+    <span class="n">notes</span><span class="o">=</span><span class="s1">&#39;Comprehensive analysis findings&#39;</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">research_analysis</span><span class="p">():</span>
+    <span class="c1"># Your analysis code</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Research Findings&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+
+<h3>Search and Organization</h3>
+<div class="codehilite"><pre><span></span><code><span class="nd">@snapshot</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Machine Learning Model Evaluation&#39;</span><span class="p">,</span>
+    <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ml&#39;</span><span class="p">,</span> <span class="s1">&#39;evaluation&#39;</span><span class="p">,</span> <span class="s1">&#39;production&#39;</span><span class="p">],</span>
+    <span class="n">enable_search</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">notes</span><span class="o">=</span><span class="s1">&#39;Performance metrics for the customer churn model&#39;</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">evaluate_model</span><span class="p">():</span>
+    <span class="c1"># Create performance plots</span>
+    <span class="n">metrics</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Accuracy&#39;</span><span class="p">,</span> <span class="s1">&#39;Precision&#39;</span><span class="p">,</span> <span class="s1">&#39;Recall&#39;</span><span class="p">,</span> <span class="s1">&#39;F1-Score&#39;</span><span class="p">]</span>
+    <span class="n">scores</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.87</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.89</span><span class="p">,</span> <span class="mf">0.87</span><span class="p">]</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">metrics</span><span class="p">,</span> <span class="n">scores</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Model Performance&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Score&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+
+<h2>Output Structure</h2>
+<p>Each snapshot creates organized files:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">snapshots</span><span class="o">/</span>
+<span class="err">└──</span><span class="w"> </span><span class="n">snapshot_</span><span class="o">&lt;</span><span class="n">filename</span><span class="o">&gt;/</span>
+<span class="w">    </span><span class="err">├──</span><span class="w"> </span><span class="mi">20241201</span><span class="n">_143022_123_code</span><span class="o">.</span><span class="n">py</span><span class="w">       </span><span class="c1"># Raw source code</span>
+<span class="w">    </span><span class="err">├──</span><span class="w"> </span><span class="mi">20241201</span><span class="n">_143022_123_plot</span><span class="o">.</span><span class="n">png</span><span class="w">      </span><span class="c1"># Saved plot image  </span>
+<span class="w">    </span><span class="err">├──</span><span class="w"> </span><span class="mi">20241201</span><span class="n">_143022_123_snapshot</span><span class="o">.</span><span class="n">html</span><span class="w"> </span><span class="c1"># HTML documentation</span>
+<span class="w">    </span><span class="err">├──</span><span class="w"> </span><span class="mi">20241201</span><span class="n">_143022_123_snapshot</span><span class="o">.</span><span class="n">md</span><span class="w">   </span><span class="c1"># Markdown export</span>
+<span class="w">    </span><span class="err">└──</span><span class="w"> </span><span class="mi">20241201</span><span class="n">_143022_123_snapshot</span><span class="o">.</span><span class="n">pdf</span><span class="w">  </span><span class="c1"># PDF report</span>
+</code></pre></div>
+
+<h2>Configuration Options</h2>
+<div class="codehilite"><pre><span></span><code><span class="nd">@snapshot</span><span class="p">(</span>
+    <span class="c1"># Basic options</span>
+    <span class="n">output_dir</span><span class="o">=</span><span class="s2">&quot;my_snapshots&quot;</span><span class="p">,</span>            <span class="c1"># Custom output directory</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;My Analysis&quot;</span><span class="p">,</span>                  <span class="c1"># Custom title</span>
+    <span class="n">author</span><span class="o">=</span><span class="s2">&quot;Data Scientist&quot;</span><span class="p">,</span>              <span class="c1"># Author metadata</span>
+    <span class="n">notes</span><span class="o">=</span><span class="s2">&quot;Important findings&quot;</span><span class="p">,</span>           <span class="c1"># Additional notes</span>
+
+    <span class="c1"># Visualization backend</span>
+    <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;matplotlib&quot;</span><span class="p">,</span>                 <span class="c1"># &#39;matplotlib&#39;, &#39;plotly&#39;, &#39;altair&#39;</span>
+
+    <span class="c1"># Export formats</span>
+    <span class="n">export_formats</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;html&quot;</span><span class="p">,</span> <span class="s2">&quot;pdf&quot;</span><span class="p">],</span>       <span class="c1"># Multiple format support</span>
+
+    <span class="c1"># Search and organization</span>
+    <span class="n">enable_search</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>                   <span class="c1"># Enable search indexing</span>
+    <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;analysis&quot;</span><span class="p">,</span> <span class="s2">&quot;research&quot;</span><span class="p">],</span>        <span class="c1"># Organization tags</span>
+
+    <span class="c1"># Static site integration</span>
+    <span class="n">site</span><span class="o">=</span><span class="s2">&quot;./my-research-site&quot;</span><span class="p">,</span>           <span class="c1"># Site directory</span>
+    <span class="n">collection</span><span class="o">=</span><span class="s2">&quot;experiments&quot;</span><span class="p">,</span>            <span class="c1"># Collection name</span>
+    <span class="n">auto_build</span><span class="o">=</span><span class="kc">True</span>                      <span class="c1"># Auto-build static site</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_analysis</span><span class="p">():</span>
+    <span class="c1"># Your code here</span>
+    <span class="k">pass</span>
+</code></pre></div>
+
+<h2>Next Steps</h2>
+<ul>
+<li><a href="/examples/">View Examples</a> - See real-world usage patterns</li>
+<li><a href="/jupyter/">Jupyter Integration</a> - Learn about magic commands</li>
+<li><a href="/static-sites/">Static Sites</a> - Build searchable documentation websites</li>
+<li><a href="/search/">Search Documentation</a> - Organize and find your analysis</li>
+</ul>
+<h2>Need Help?</h2>
+<ul>
+<li>Check the <a href="https://github.com/yourusername/snapshotplot">GitHub repository</a> for issues and documentation</li>
+<li>Review the generated HTML files for examples of the output format</li>
+<li>Use the search feature on this site to find specific analysis patterns</li>
+</ul>
+        
+    </main>
+    
+    <footer>
+    <div class="container">
+        <p>&copy; Data Science Team - Generated with SnapshotPlot</p>
+        
+    </div>
+</footer>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="/assets/js/search.js"></script>
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jupyter Notebook Integration - SnapshotPlot</title>
+    <link rel="stylesheet" href="/assets/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <header>
+    <div class="container">
+        <div class="header-content">
+            <a href="/" class="logo">SnapshotPlot</a>
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Search plots, code, tags..." />
+                <div id="search-results" class="search-results-dropdown"></div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    
+                        <li><a href="/experiments/">ML Experiments</a></li>
+                    
+                        <li><a href="/visualizations/">Data Visualizations</a></li>
+                    
+                    <li class="nav-divider">|</li>
+                    <li><a href="/getting-started/">Get Started</a></li>
+                    <li><a href="/examples/">Examples</a></li>
+                    <li><a href="/jupyter/">Jupyter</a></li>
+                    <li><a href="/static-sites/">Sites</a></li>
+                    <li><a href="/search/">Search</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header>
+    
+    <main class="container">
+        
+            <h1>Jupyter Notebook Integration</h1>
+<p>SnapshotPlot provides seamless integration with Jupyter notebooks through IPython magic commands, enabling you to capture and document your analysis workflow with zero overhead.</p>
+<h2>Quick Start</h2>
+<div class="codehilite"><pre><span></span><code><span class="c1"># 1. Load the extension (once per notebook)</span>
+<span class="o">%</span><span class="n">load_ext</span> <span class="n">snapshotplot</span>
+
+<span class="c1"># 2. Use cell magic to capture analysis</span>
+<span class="o">%%</span><span class="n">snapshot</span> <span class="o">-</span><span class="n">t</span> <span class="s2">&quot;Customer Analysis&quot;</span> <span class="o">-</span><span class="n">a</span> <span class="s2">&quot;Data Science Team&quot;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="c1"># Your analysis code</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data.csv&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;revenue&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Revenue Distribution&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+
+<h2>Magic Commands</h2>
+<h3>Cell Magic (<code>%%snapshot</code>)</h3>
+<p>Capture an entire cell's code and output - the most common usage pattern:</p>
+<div class="codehilite"><pre><span></span><code><span class="o">%%</span><span class="n">snapshot</span> <span class="o">-</span><span class="n">t</span> <span class="s2">&quot;Market Segmentation&quot;</span> <span class="o">-</span><span class="n">a</span> <span class="s2">&quot;Analytics Team&quot;</span> <span class="o">--</span><span class="n">tags</span> <span class="n">ml</span> <span class="n">clustering</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.cluster</span><span class="w"> </span><span class="kn">import</span> <span class="n">KMeans</span>
+
+<span class="c1"># Perform clustering analysis</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">kmeans</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">clusters</span> <span class="o">=</span> <span class="n">kmeans</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1"># Visualize results</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">clusters</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Customer Segments&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Feature 1&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Feature 2&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Cluster&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+
+<h3>Line Magic (<code>%snapshot</code>)</h3>
+<p>Capture the previous cell's output - useful for retroactive documentation:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># First cell: Create your analysis</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time_series_data</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Sales Trend Over Time&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># Second cell: Capture it with metadata</span>
+<span class="o">%</span><span class="n">snapshot</span> <span class="o">-</span><span class="n">t</span> <span class="s2">&quot;Q4 Sales Trend&quot;</span> <span class="o">-</span><span class="n">a</span> <span class="s2">&quot;Sales Team&quot;</span> <span class="o">--</span><span class="n">tags</span> <span class="n">quarterly</span> <span class="n">sales</span> <span class="o">--</span><span class="n">description</span> <span class="s2">&quot;Shows strong growth in Q4&quot;</span>
+</code></pre></div>
+
+<h2>Magic Command Arguments</h2>
+<p>All magic commands support comprehensive metadata and configuration options:</p>
+<p>| Argument | Short | Description | Example |
+|----------|-------|-------------|---------|
+| <code>--title</code> | <code>-t</code> | Snapshot title | <code>-t "Analysis Title"</code> |
+| <code>--author</code> | <code>-a</code> | Author name | <code>-a "Data Team"</code> |
+| <code>--notes</code> | <code>-n</code> | Additional notes | <code>-n "Key findings"</code> |
+| <code>--tags</code> | | Space-separated tags | <code>--tags ml analysis</code> |
+| <code>--description</code> | | Detailed description | <code>--description "Model evaluation"</code> |
+| <code>--collection</code> | | Collection name | <code>--collection research</code> |
+| <code>--output-dir</code> | <code>-o</code> | Custom output directory | <code>-o custom_snapshots</code> |
+| <code>--dpi</code> | | Plot resolution | <code>--dpi 300</code> |
+| <code>--site</code> | | Site directory | <code>--site ../blog</code> |
+| <code>--auto-build</code> | | Auto-build site | <code>--auto-build</code> |</p>
+<h3>Full Example</h3>
+<div class="codehilite"><pre><span></span><code><span class="o">%%</span><span class="n">snapshot</span> <span class="o">-</span><span class="n">t</span> <span class="s2">&quot;Final Model Results&quot;</span> \
+           <span class="o">-</span><span class="n">a</span> <span class="s2">&quot;ML Team&quot;</span> \
+           <span class="o">-</span><span class="n">n</span> <span class="s2">&quot;Production model evaluation&quot;</span> \
+           <span class="o">--</span><span class="n">tags</span> <span class="n">model</span> <span class="n">evaluation</span> <span class="n">production</span> \
+           <span class="o">--</span><span class="n">description</span> <span class="s2">&quot;Performance metrics for the final customer churn model&quot;</span> \
+           <span class="o">--</span><span class="n">collection</span> <span class="s2">&quot;ml-models&quot;</span> \
+           <span class="o">--</span><span class="n">site</span> <span class="s2">&quot;../research-blog&quot;</span> \
+           <span class="o">--</span><span class="n">auto</span><span class="o">-</span><span class="n">build</span>
+
+<span class="c1"># Your model evaluation code</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">classification_report</span><span class="p">,</span> <span class="n">confusion_matrix</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">cm</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Blues&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Model Performance&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">))</span>
+</code></pre></div>
+
+<h2>Context Manager</h2>
+<p>Use the notebook-aware context manager for programmatic control:</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">snapshotplot</span><span class="w"> </span><span class="kn">import</span> <span class="n">notebook_snapshot</span>
+
+<span class="c1"># Basic usage</span>
+<span class="k">with</span> <span class="n">notebook_snapshot</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Experiment Results&quot;</span><span class="p">):</span>
+    <span class="n">run_experiment</span><span class="p">()</span>
+    <span class="n">plot_results</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># With full configuration</span>
+<span class="k">with</span> <span class="n">notebook_snapshot</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;A/B Test Analysis&quot;</span><span class="p">,</span>
+    <span class="n">author</span><span class="o">=</span><span class="s2">&quot;Product Team&quot;</span><span class="p">,</span> 
+    <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ab-test&quot;</span><span class="p">,</span> <span class="s2">&quot;conversion&quot;</span><span class="p">],</span>
+    <span class="n">collection</span><span class="o">=</span><span class="s2">&quot;experiments&quot;</span><span class="p">,</span>
+    <span class="n">site</span><span class="o">=</span><span class="s2">&quot;../product-blog&quot;</span>
+<span class="p">):</span>
+    <span class="n">analyze_ab_test</span><span class="p">()</span>
+    <span class="n">plot_conversion_rates</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+
+<h2>Real-World Workflow</h2>
+<p>Here's how to integrate SnapshotPlot into a typical data science workflow:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># === NOTEBOOK SETUP ===</span>
+<span class="o">%</span><span class="n">load_ext</span> <span class="n">snapshotplot</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+
+<span class="c1"># === EXPLORATORY DATA ANALYSIS ===</span>
+<span class="c1"># Regular cells for exploration (no snapshot needed)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;customer_data.csv&#39;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+<span class="n">df</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+
+<span class="c1"># === KEY INSIGHTS (Capture with snapshot) ===</span>
+<span class="o">%%</span><span class="n">snapshot</span> <span class="o">-</span><span class="n">t</span> <span class="s2">&quot;Customer Demographics Overview&quot;</span> <span class="o">-</span><span class="n">a</span> <span class="s2">&quot;Data Science Team&quot;</span> <span class="o">--</span><span class="n">tags</span> <span class="n">demographics</span> <span class="n">eda</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Age Distribution&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> 
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;income&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Income Distribution&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">countplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;segment&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Customer Segments&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># === MODELING (More exploration) ===</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+
+<span class="c1"># === MODEL RESULTS (Capture with snapshot) ===</span>
+<span class="o">%%</span><span class="n">snapshot</span> <span class="o">-</span><span class="n">t</span> <span class="s2">&quot;Model Performance Evaluation&quot;</span> <span class="o">--</span><span class="n">tags</span> <span class="n">modeling</span> <span class="n">evaluation</span> <span class="o">--</span><span class="n">collection</span> <span class="n">research</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">classification_report</span><span class="p">,</span> <span class="n">confusion_matrix</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+
+<span class="c1"># Evaluate model</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+
+<span class="c1"># Plot confusion matrix</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">cm</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Blues&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Confusion Matrix&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Actual&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Predicted&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Classification Report:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">))</span>
+
+<span class="c1"># === FINAL INSIGHTS (Capture for presentation) ===</span>
+<span class="o">%%</span><span class="n">snapshot</span> <span class="o">-</span><span class="n">t</span> <span class="s2">&quot;Business Impact Analysis&quot;</span> <span class="o">-</span><span class="n">a</span> <span class="s2">&quot;Data Science Team&quot;</span> \
+           <span class="o">--</span><span class="n">description</span> <span class="s2">&quot;Revenue impact of customer segmentation model&quot;</span> \
+           <span class="o">--</span><span class="n">tags</span> <span class="n">business</span><span class="o">-</span><span class="n">impact</span> <span class="n">revenue</span> <span class="o">--</span><span class="n">collection</span> <span class="n">presentations</span> \
+           <span class="o">--</span><span class="n">site</span> <span class="s2">&quot;../executive-dashboard&quot;</span> <span class="o">--</span><span class="n">auto</span><span class="o">-</span><span class="n">build</span>
+
+<span class="c1"># Calculate business impact</span>
+<span class="n">plot_revenue_impact_by_segment</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+
+<h2>Generated Output</h2>
+<p>Each snapshot creates three files with consistent naming:</p>
+<div class="codehilite"><pre><span></span><code>Project/
+├── my_analysis.ipynb
+└── snapshot_my_analysis/
+    ├── 20240718_143022_001_code.py      # Cell source code
+    ├── 20240718_143022_001_plot.png     # Matplotlib figure
+    ├── 20240718_143022_001_snapshot.html # HTML documentation
+    ├── 20240718_143155_002_code.py      # Next snapshot
+    ├── 20240718_143155_002_plot.png
+    └── 20240718_143155_002_snapshot.html
+</code></pre></div>
+
+<h2>HTML Documentation Features</h2>
+<p>The generated HTML documentation includes:</p>
+<ul>
+<li><strong>Notebook Metadata</strong>: Name, kernel info, execution timestamp</li>
+<li><strong>Syntax-Highlighted Code</strong>: Beautiful Python code formatting</li>
+<li><strong>Embedded Plots</strong>: High-resolution matplotlib figures</li>
+<li><strong>User Metadata</strong>: Title, author, tags, and notes</li>
+<li><strong>Responsive Design</strong>: Mobile and desktop friendly</li>
+<li><strong>Dark Mode Theme</strong>: Easy on the eyes for long reading sessions</li>
+<li><strong>Professional Styling</strong>: Ready for sharing with stakeholders</li>
+</ul>
+<h2>Multiple Visualization Libraries</h2>
+<p>SnapshotPlot works with all major visualization libraries in Jupyter:</p>
+<h3>Matplotlib (Default)</h3>
+<div class="codehilite"><pre><span></span><code><span class="o">%%</span><span class="n">snapshot</span> <span class="o">-</span><span class="n">t</span> <span class="s2">&quot;Matplotlib Visualization&quot;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Basic Line Plot&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+
+<h3>Plotly (Interactive)</h3>
+<div class="codehilite"><pre><span></span><code><span class="o">%%</span><span class="n">snapshot</span> <span class="o">-</span><span class="n">t</span> <span class="s2">&quot;Interactive Plotly Chart&quot;</span> <span class="o">--</span><span class="n">backend</span> <span class="n">plotly</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">plotly.graph_objects</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">go</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">]))</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Interactive Plot&#39;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+
+<h3>Seaborn (Statistical)</h3>
+<div class="codehilite"><pre><span></span><code><span class="o">%%</span><span class="n">snapshot</span> <span class="o">-</span><span class="n">t</span> <span class="s2">&quot;Statistical Visualization&quot;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">10</span><span class="p">)})</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Seaborn Scatter Plot&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+
+<h2>Site Integration</h2>
+<p>For teams maintaining research blogs or documentation sites, SnapshotPlot can automatically integrate with static site generators:</p>
+<div class="codehilite"><pre><span></span><code><span class="o">%%</span><span class="n">snapshot</span> <span class="o">-</span><span class="n">t</span> <span class="s2">&quot;Quarterly Results&quot;</span> \
+           <span class="o">--</span><span class="n">site</span> <span class="s2">&quot;../research-blog&quot;</span> \
+           <span class="o">--</span><span class="n">collection</span> <span class="s2">&quot;quarterly-reports&quot;</span> \
+           <span class="o">--</span><span class="n">auto</span><span class="o">-</span><span class="n">build</span>
+
+<span class="c1"># This will:</span>
+<span class="c1"># 1. Create the snapshot files</span>
+<span class="c1"># 2. Copy them to your site&#39;s collection directory  </span>
+<span class="c1"># 3. Generate site metadata</span>
+<span class="c1"># 4. Build the static site</span>
+</code></pre></div>
+
+<h2>Environment Detection</h2>
+<p>You can programmatically detect if code is running in a notebook:</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">snapshotplot</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_notebook</span>
+
+<span class="k">if</span> <span class="n">is_notebook</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running in Jupyter - magic commands available!&quot;</span><span class="p">)</span>
+    <span class="o">%</span><span class="n">load_ext</span> <span class="n">snapshotplot</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running in regular Python - using context managers&quot;</span><span class="p">)</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">snapshotplot</span><span class="w"> </span><span class="kn">import</span> <span class="n">snapshot</span>
+</code></pre></div>
+
+<h2>Best Practices</h2>
+<ol>
+<li><strong>Load Once</strong>: Run <code>%load_ext snapshotplot</code> once at the beginning of your notebook</li>
+<li><strong>Meaningful Titles</strong>: Use descriptive titles that will make sense months later</li>
+<li><strong>Tag Everything</strong>: Use consistent tags to organize your analysis across notebooks</li>
+<li><strong>Capture Key Steps</strong>: Not every cell needs a snapshot - focus on important insights</li>
+<li><strong>Team Consistency</strong>: Establish naming conventions for titles, authors, and tags</li>
+<li><strong>Regular Review</strong>: Generated HTML files are perfect for team reviews and presentations</li>
+</ol>
+<h2>Troubleshooting</h2>
+<h3>Extension Not Loading</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># If %load_ext fails, try:</span>
+<span class="o">%</span><span class="n">reload_ext</span> <span class="n">snapshotplot</span>
+
+<span class="c1"># Or install with jupyter support:</span>
+<span class="c1"># pip install snapshotplot[jupyter]</span>
+</code></pre></div>
+
+<h3>Magic Command Not Found</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Verify extension is loaded:</span>
+<span class="o">%</span><span class="n">lsmagic</span> <span class="o">|</span> <span class="n">grep</span> <span class="n">snapshot</span>
+
+<span class="c1"># Should show %%snapshot and %snapshot</span>
+</code></pre></div>
+
+<h3>Plots Not Captured</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Ensure plt.show() is called in the cell</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>  <span class="c1"># Required for capture</span>
+
+<span class="c1"># For Plotly, ensure fig.show() is called</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>  <span class="c1"># Required for Plotly capture</span>
+</code></pre></div>
+
+<h3>Permission Errors</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Check write permissions to snapshot directory</span>
+ls<span class="w"> </span>-la<span class="w"> </span>snapshots/
+
+<span class="c1"># Create directory if needed</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span>snapshots
+chmod<span class="w"> </span><span class="m">755</span><span class="w"> </span>snapshots
+</code></pre></div>
+
+<p>The Jupyter integration makes SnapshotPlot incredibly powerful for data science workflows, providing seamless documentation without disrupting your analysis flow.</p>
+        
+    </main>
+    
+    <footer>
+    <div class="container">
+        <p>&copy; Data Science Team - Generated with SnapshotPlot</p>
+        
+    </div>
+</footer>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="/assets/js/search.js"></script>
+</body>
+</html>

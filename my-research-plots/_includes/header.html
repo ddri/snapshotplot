@@ -2,12 +2,22 @@
     <div class="container">
         <div class="header-content">
             <a href="/" class="logo">{{ site.title }}</a>
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Search plots, code, tags..." />
+                <div id="search-results" class="search-results-dropdown"></div>
+            </div>
             <nav>
                 <ul>
                     <li><a href="/">Home</a></li>
                     {% for collection_name, collection_config in site.collections.items() %}
                         <li><a href="/{{ collection_name }}/">{{ collection_config.title }}</a></li>
                     {% endfor %}
+                    <li class="nav-divider">|</li>
+                    <li><a href="/getting-started/">Get Started</a></li>
+                    <li><a href="/examples/">Examples</a></li>
+                    <li><a href="/jupyter/">Jupyter</a></li>
+                    <li><a href="/static-sites/">Sites</a></li>
+                    <li><a href="/search/">Search</a></li>
                 </ul>
             </nav>
         </div>

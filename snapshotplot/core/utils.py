@@ -139,7 +139,10 @@ def get_default_config() -> dict:
         'author': None,
         'notes': None,
         'dpi': 300,
-        'bbox_inches': 'tight'
+        'bbox_inches': 'tight',
+        'backend': 'matplotlib',
+        'export_formats': ['html'],
+        'enable_search': False
     }
 
 

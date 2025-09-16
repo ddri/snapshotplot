@@ -1,6 +1,6 @@
 # SnapShotPlot 📸📊
 
-Capture Python code, Matplotlib plots, and HTML documentation in one step with automatic timestamping and organization.
+Capture Python code, visualizations (Matplotlib/Plotly/Altair), and multi-format documentation in one step with automatic timestamping, search, and organization.
 
 Ever run into this?
 
@@ -28,7 +28,10 @@ Because science shouldn't involve detective work.
 - **🔄 Decorator & Context Manager Support**: Use as `@snapshot()` or `with snapshot():`
 - **⏰ Unified Timestamping**: Single UTC timestamp per snapshot run
 - **📁 Auto-Organization**: Creates timestamped folders with all outputs
-- **🎨 HTML Documentation**: Beautiful, syntax-highlighted HTML with embedded plots
+- **🎨 Multi-Backend Visualization**: matplotlib, Plotly, Altair support
+- **📄 Multiple Export Formats**: HTML, PDF, Markdown, LaTeX, Jupyter
+- **🔍 Full-Text Search**: SQLite-powered search across all snapshots
+- **🌐 Static Site Generation**: Beautiful, searchable websites with zero hosting costs
 - **🔧 Zero Configuration**: Works out of the box with sensible defaults
 - **🚀 Non-Intrusive**: Runs silently in the background
 
@@ -50,14 +53,18 @@ Choose your workflow and install the appropriate features:
 # Workflow 1: Solo Researcher (Core Only)
 pip install snapshotplot
 
-# Workflow 2: Data Science Team (Core + Jupyter)  
+# Workflow 2: Data Science Team (Core + Jupyter + Multi-library support)  
 pip install snapshotplot[jupyter]
 
-# Workflow 3: Research Organization (Core + Site Generator)
+# Workflow 3: Research Organization (Core + Site Generator + Export formats)
 pip install snapshotplot[site]
 
 # Workflow 4: DevOps/Automation (All Features)
 pip install snapshotplot[all]
+
+# Optional feature-specific installs:
+pip install snapshotplot[search]    # Add search functionality
+pip install snapshotplot[academic]  # Add LaTeX/PDF export for academic use
 ```
 
 ### Basic Usage
@@ -130,11 +137,26 @@ The output includes:
 
 ```python
 @snapshot(
-    output_dir="my_snapshots",      # Custom output directory
-    code_format="html",            # Code format in HTML
-    title="My Analysis",           # Custom title for HTML
-    author="Data Scientist",       # Author metadata
-    notes="Important findings"     # Additional notes
+    # Basic options
+    output_dir="my_snapshots",            # Custom output directory
+    title="My Analysis",                  # Custom title for HTML
+    author="Data Scientist",              # Author metadata
+    notes="Important findings",           # Additional notes
+    
+    # Visualization backend
+    backend="matplotlib",                 # Backend: 'matplotlib', 'plotly', 'altair'
+    
+    # Export formats
+    export_formats=["html", "pdf"],       # Formats: 'html', 'pdf', 'markdown', 'latex', 'jupyter'
+    
+    # Search and organization
+    enable_search=True,                   # Enable search indexing
+    tags=["analysis", "research"],        # Organization tags
+    
+    # Static site integration
+    site="./my-research-site",           # Site directory for static site generation
+    collection="experiments",            # Collection name for organization
+    auto_build=True                      # Auto-build static site
 )
 def my_analysis():
     # Your code here
@@ -491,10 +513,82 @@ MIT License - see LICENSE file for details.
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
+## Enhanced Features (Recently Added)
+
+### Multiple Visualization Libraries
+- **🎨 Multi-Backend Support**: matplotlib (default), Plotly, Altair
+- **📊 Interactive Plots**: Plotly integration for web-native interactivity
+- **🔧 Plugin Architecture**: Extensible backend system for new visualization libraries
+
+```python
+# Use different visualization backends
+@snapshot(backend='plotly', title='Interactive Analysis')
+def create_interactive_plot():
+    import plotly.graph_objects as go
+    fig = go.Figure(data=go.Bar(x=['A', 'B', 'C'], y=[1, 3, 2]))
+    fig.show()
+```
+
+### Multiple Export Formats
+- **📄 PDF Export**: Professional reports via WeasyPrint
+- **📝 Markdown Export**: Integration with documentation systems
+- **📓 Jupyter Notebook Export**: Programmatic notebook generation
+- **📖 LaTeX Support**: Academic publication formatting
+
+```python
+# Export to multiple formats simultaneously
+@snapshot(
+    title='Research Results',
+    export_formats=['html', 'pdf', 'markdown'],
+    author='Research Team'
+)
+def research_analysis():
+    # Your analysis code
+    pass
+```
+
+### Search & Discovery
+- **🔍 Full-Text Search**: Search across code content, titles, descriptions
+- **🏷️ Tag-Based Organization**: Categorize and filter analyses
+- **📈 Usage Analytics**: Track patterns and insights over time
+- **🗃️ SQLite Database**: Local, fast, privacy-preserving search
+
+```python
+# Enable search indexing
+@snapshot(
+    title='Machine Learning Model Evaluation',
+    tags=['ml', 'evaluation', 'production'],
+    enable_search=True
+)
+def evaluate_model():
+    # Your ML code
+    pass
+```
+
+### Enhanced Static Sites
+- **🔍 Client-Side Search**: Instant search without server requirements
+- **🎨 Modern UI**: GitHub-like browsing experience
+- **📱 Responsive Design**: Works perfectly on mobile devices
+- **⚡ Zero Hosting Costs**: Deploy anywhere (GitHub Pages, Netlify, etc.)
+
 ## Roadmap
 
-- [ ] Support for Plotly and Altair
-- [ ] Markdown export option
-- [ ] Multiple plot gallery
-- [ ] CLI tool for batch processing
-- [x] Jupyter notebook integration 
+### Completed ✅
+- [x] Multiple visualization backends (Plotly, Altair)
+- [x] Multi-format export (PDF, Markdown, LaTeX, Jupyter)
+- [x] Search and metadata system with full-text search
+- [x] Enhanced static site generation with client-side search
+- [x] Jupyter notebook integration
+- [x] Modular architecture with optional dependencies
+
+### In Progress 🚧
+- [ ] VS Code extension for inline snapshot management
+- [ ] Web-based dashboard interface
+- [ ] Performance optimization and async processing
+- [ ] Advanced analytics and insights
+
+### Future 🔮
+- [ ] Collaborative features and team management
+- [ ] Cloud storage backends (S3, GCS)
+- [ ] CI/CD pipeline integration
+- [ ] Enterprise security and compliance features

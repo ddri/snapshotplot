@@ -9,6 +9,7 @@ import functools
 import os
 from typing import Optional, Callable, Any, Dict, Union
 from contextlib import contextmanager
+from pathlib import Path
 
 from .timestamp import get_timestamp, get_datetime, reset_timestamp, generate_new_timestamp
 from .code_capture import get_calling_info
@@ -27,6 +28,8 @@ from .utils import (
     validate_config,
     format_timestamp_for_display
 )
+from .visualization_backends import BackendRegistry
+from .export_formats import ExportFormatRegistry
 
 
 class SnapshotContext:
@@ -47,7 +50,11 @@ class SnapshotContext:
         description: Optional[str] = None,
         auto_commit: bool = False,
         auto_build: bool = False,
-        auto_deploy: bool = False
+        auto_deploy: bool = False,
+        # New enhancement parameters
+        backend: Optional[str] = None,
+        export_formats: Optional[list] = None,
+        enable_search: bool = False
     ):
         """
         Initialize the snapshot context manager.
@@ -66,6 +73,9 @@ class SnapshotContext:
             auto_commit: Automatically commit to git after snapshot
             auto_build: Automatically build static site after snapshot
             auto_deploy: Automatically deploy site after snapshot
+            backend: Visualization backend to use ('matplotlib', 'plotly', 'altair')
+            export_formats: List of export formats ('html', 'pdf', 'markdown', 'latex', 'jupyter')
+            enable_search: Enable search indexing for this snapshot
         """
         self.config = {
             'output_dir': output_dir,
@@ -80,7 +90,10 @@ class SnapshotContext:
             'description': description,
             'auto_commit': auto_commit,
             'auto_build': auto_build,
-            'auto_deploy': auto_deploy
+            'auto_deploy': auto_deploy,
+            'backend': backend,
+            'export_formats': export_formats or ['html'],
+            'enable_search': enable_search
         }
         
         # Validate and merge with defaults
@@ -91,6 +104,12 @@ class SnapshotContext:
         self.timestamp = None
         self.calling_info = None
         self.file_paths = None
+        
+        # Initialize backend registry
+        self.backend_registry = BackendRegistry()
+        
+        # Initialize export format registry
+        self.export_registry = ExportFormatRegistry()
         
     def __enter__(self):
         """Enter the context and prepare for snapshot capture."""
@@ -134,10 +153,10 @@ class SnapshotContext:
         self._save_source_code()
         
         # Save plot if available
-        plot_saved = self._save_plot()
+        plot_data = self._save_plot()
         
-        # Create HTML documentation
-        self._create_html_documentation(plot_saved)
+        # Create documentation in all requested formats
+        self._create_documentation(plot_data)
         
         # Handle site generation if configured
         if self.config.get('site') or self.config.get('collection'):
@@ -163,26 +182,35 @@ class SnapshotContext:
             import warnings
             warnings.warn(f"Failed to save source code: {e}")
     
-    def _save_plot(self) -> bool:
-        """Save the current matplotlib plot if available."""
-        if not has_active_figure():
-            return False
-        
+    def _save_plot(self) -> dict:
+        """Save plots using the configured visualization backend."""
         try:
-            save_current_plot(
-                self.file_paths['plot'],
-                dpi=self.config['dpi'],
-                bbox_inches=self.config['bbox_inches']
+            # Get the backend (default to matplotlib for backward compatibility)
+            backend_name = self.config.get('backend', 'matplotlib')
+            backend = self.backend_registry.get_backend(backend_name)
+            
+            if not backend.detect_active_plots():
+                return {'saved': False, 'files': []}
+            
+            # Save plots in the configured formats
+            plot_files = backend.save_plots(
+                output_dir=os.path.dirname(self.file_paths['plot']),
+                timestamp=self.timestamp,
+                formats=['png']  # Default format for backward compatibility
             )
-            return True
+            
+            return {'saved': True, 'files': plot_files}
+            
         except Exception as e:
             import warnings
             warnings.warn(f"Failed to save plot: {e}")
-            return False
+            return {'saved': False, 'files': []}
     
-    def _create_html_documentation(self, plot_saved: bool):
-        """Create HTML documentation for the snapshot."""
+    def _create_documentation(self, plot_data: dict):
+        """Create documentation in all requested formats."""
         try:
+            from .export_formats import ExportContext
+            
             # Prepare metadata
             metadata = {
                 'function_name': self.calling_info['function_name'],
@@ -190,20 +218,77 @@ class SnapshotContext:
                 'date': format_timestamp_for_display(self.timestamp)
             }
             
-            # Always create HTML snapshot, even if no plot
-            plot_path = self.file_paths['plot'] if plot_saved else ''
-            create_html_snapshot(
+            # Prepare export context
+            plot_files = plot_data.get('files', [])
+            plot_paths = [Path(pf['path']) for pf in plot_files] if plot_files else []
+            
+            context = ExportContext(
                 code=self.calling_info['source_code'],
-                plot_path=plot_path,
-                html_path=self.file_paths['html'],
+                plot_paths=plot_paths,
                 metadata=metadata,
+                timestamp=self.timestamp,
+                output_dir=Path(os.path.dirname(self.file_paths['html'])),
                 title=self.config['title'],
                 author=self.config['author'],
                 notes=self.config['notes']
             )
+            
+            # Export in all requested formats
+            for format_name in self.config['export_formats']:
+                try:
+                    exporter = self.export_registry.get_format(format_name)
+                    exporter.export(context)
+                except Exception as e:
+                    import warnings
+                    warnings.warn(f"Failed to export {format_name}: {e}")
+                    
+            # Handle search indexing if enabled
+            if self.config.get('enable_search'):
+                self._index_snapshot(context)
+                
         except Exception as e:
             import warnings
-            warnings.warn(f"Failed to create HTML documentation: {e}")
+            warnings.warn(f"Failed to create documentation: {e}")
+    
+    def _index_snapshot(self, context):
+        """Index the snapshot for search functionality."""
+        try:
+            from .search_system import SnapshotSearchManager, SnapshotIndex
+            from datetime import datetime
+            
+            # Create search manager
+            output_dir = Path(self.config.get('output_dir', 'snapshots'))
+            search_manager = SnapshotSearchManager(output_dir)
+            
+            # Create snapshot index object with our programmatic data
+            snapshot_index = SnapshotIndex(
+                id=self.timestamp,
+                timestamp=datetime.now().isoformat(),
+                title=context.title or self.calling_info['function_name'],
+                author=context.author,
+                filename=self.calling_info['filename'],
+                function_name=self.calling_info['function_name'],
+                description=context.notes or '',
+                tags=self.config.get('tags', []),
+                code_content=context.code,
+                plot_paths=[str(p) for p in context.plot_paths],
+                file_size_bytes=len(context.code.encode('utf-8')),
+                creation_date=datetime.now(),
+                last_modified=datetime.now(),
+                metadata={
+                    'backend': self.config.get('backend', 'matplotlib'),
+                    'export_formats': self.config.get('export_formats', ['html']),
+                    'code_length': len(context.code),
+                    'plot_count': len(context.plot_paths)
+                }
+            )
+            
+            # Add directly to search index
+            search_manager.index.add_snapshot(snapshot_index)
+            
+        except Exception as e:
+            import warnings
+            warnings.warn(f"Failed to index snapshot: {e}")
     
     def _handle_site_generation(self):
         """Handle site generation integration."""
@@ -237,9 +322,12 @@ class SnapshotContext:
             # Copy files to site structure
             import shutil
             
-            # Copy plot image
-            if os.path.exists(self.file_paths['plot']):
-                shutil.copy2(self.file_paths['plot'], plot_dir / 'plot.png')
+            # Copy plot files
+            plot_files = plot_data.get('files', [])
+            if plot_files:
+                # Use the first plot file for backward compatibility
+                plot_file = plot_files[0]
+                shutil.copy2(plot_file['path'], plot_dir / 'plot.png')
             
             # Copy source code
             if os.path.exists(self.file_paths['code']):
@@ -326,7 +414,11 @@ class SnapshotDecorator:
         description: Optional[str] = None,
         auto_commit: bool = False,
         auto_build: bool = False,
-        auto_deploy: bool = False
+        auto_deploy: bool = False,
+        # New enhancement parameters
+        backend: Optional[str] = None,
+        export_formats: Optional[list] = None,
+        enable_search: bool = False
     ):
         """Initialize the decorator with configuration."""
         self.config = {
@@ -342,7 +434,10 @@ class SnapshotDecorator:
             'description': description,
             'auto_commit': auto_commit,
             'auto_build': auto_build,
-            'auto_deploy': auto_deploy
+            'auto_deploy': auto_deploy,
+            'backend': backend,
+            'export_formats': export_formats or ['html'],
+            'enable_search': enable_search
         }
     
     def __call__(self, func: Callable) -> Callable:
@@ -381,7 +476,11 @@ def snapshot(
     description: Optional[str] = None,
     auto_commit: bool = False,
     auto_build: bool = False,
-    auto_deploy: bool = False
+    auto_deploy: bool = False,
+    # New enhancement parameters
+    backend: Optional[str] = None,
+    export_formats: Optional[list] = None,
+    enable_search: bool = False
 ) -> Union[SnapshotDecorator, Callable]:
     """
     Create a snapshot decorator or context manager.
@@ -421,7 +520,10 @@ def snapshot(
         description=description,
         auto_commit=auto_commit,
         auto_build=auto_build,
-        auto_deploy=auto_deploy
+        auto_deploy=auto_deploy,
+        backend=backend,
+        export_formats=export_formats,
+        enable_search=enable_search
     )
 
 

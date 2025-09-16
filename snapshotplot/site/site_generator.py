@@ -5,6 +5,7 @@ Static site generator for SnapshotPlot.
 import os
 import yaml
 import shutil
+import json
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any, List, Optional
@@ -160,8 +161,14 @@ class SiteGenerator:
         # Build collection pages
         self._build_collections(plots, output_path, verbose)
         
+        # Build documentation pages
+        self._build_pages(output_path, verbose)
+        
         # Build individual plot pages
         self._build_plot_pages(plots, output_path, verbose)
+        
+        # Generate search index
+        self._build_search_index(plots, output_path, verbose)
         
         if verbose:
             print(f"✅ Built {len(plots)} plots across {len(self.config.get('collections', {}))} collections")
@@ -323,3 +330,142 @@ class SiteGenerator:
                     plot_data[f'{file.stem}_content'] = f.read()
         
         return plot_data
+    
+    def _build_search_index(self, plots: List[Dict[str, Any]], output_path: Path, verbose: bool):
+        """Generate client-side search index as JSON."""
+        search_index = []
+        
+        for plot in plots:
+            # Create searchable index entry
+            index_entry = {
+                'id': plot.get('slug', ''),
+                'title': plot.get('title', ''),
+                'description': plot.get('description', ''),
+                'author': plot.get('author', ''),
+                'tags': plot.get('tags', []),
+                'collection': plot.get('collection', ''),
+                'date': plot.get('date', ''),
+                'function_name': plot.get('function_name', ''),
+                'filename': plot.get('filename', ''),
+                'url': f"/{plot.get('collection', '')}/{plot.get('slug', '')}/",
+                'plot_image': plot.get('plot_image', ''),
+                # Include code content for full-text search (truncated for performance)
+                'code_preview': (plot.get('code_content', '') or '')[:500],
+                # Add searchable keywords
+                'keywords': self._extract_keywords(plot)
+            }
+            
+            # Remove empty fields to reduce JSON size
+            index_entry = {k: v for k, v in index_entry.items() if v}
+            search_index.append(index_entry)
+        
+        # Save search index
+        search_path = output_path / 'assets' / 'js'
+        search_path.mkdir(parents=True, exist_ok=True)
+        
+        with open(search_path / 'search-index.json', 'w') as f:
+            json.dump(search_index, f, separators=(',', ':'))  # Minified JSON
+        
+        if verbose:
+            print(f"✅ Generated search index with {len(search_index)} entries")
+    
+    def _extract_keywords(self, plot: Dict[str, Any]) -> List[str]:
+        """Extract searchable keywords from plot metadata."""
+        keywords = []
+        
+        # Add title words
+        if plot.get('title'):
+            keywords.extend(plot['title'].lower().split())
+        
+        # Add description words  
+        if plot.get('description'):
+            keywords.extend(plot['description'].lower().split())
+        
+        # Add function name parts
+        if plot.get('function_name'):
+            # Split camelCase and snake_case
+            import re
+            func_words = re.findall(r'[A-Za-z]+', plot['function_name'])
+            keywords.extend([w.lower() for w in func_words])
+        
+        # Add filename parts
+        if plot.get('filename'):
+            filename_words = plot['filename'].replace('.py', '').replace('_', ' ').split()
+            keywords.extend([w.lower() for w in filename_words])
+        
+        # Remove duplicates and common words
+        stop_words = {'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'is', 'are'}
+        keywords = list(set(keywords) - stop_words)
+        
+        return keywords
+    
+    def _build_pages(self, output_path: Path, verbose: bool):
+        """Build documentation pages from _pages directory."""
+        pages_dir = self.site_dir / '_pages'
+        
+        if not pages_dir.exists():
+            return
+        
+        # Get page template
+        try:
+            template = self.env.get_template('default.html')
+        except:
+            # Fall back to a simple template if default.html doesn't exist
+            template_content = """<!DOCTYPE html>
+<html><head><title>{{ page_title }}</title></head>
+<body>{{ content }}</body></html>"""
+            template = self.env.from_string(template_content)
+        
+        pages_built = 0
+        
+        for page_file in pages_dir.glob('*.md'):
+            # Load page content
+            with open(page_file, 'r') as f:
+                content = f.read()
+            
+            # Parse frontmatter
+            page_data = {}
+            page_content = content
+            
+            if content.startswith('---'):
+                parts = content.split('---', 2)
+                if len(parts) >= 3:
+                    page_data = yaml.safe_load(parts[1]) or {}
+                    page_content = parts[2].strip()
+            
+            # Convert markdown to HTML
+            html_content = markdown.markdown(page_content, extensions=['codehilite', 'fenced_code'])
+            
+            # Render page
+            html = template.render(
+                site=self.config,
+                page=page_data,
+                content=html_content,
+                page_title=page_data.get('title', page_file.stem),
+                is_index=False
+            )
+            
+            # Determine output path
+            permalink = page_data.get('permalink')
+            if permalink:
+                # Use permalink (remove leading slash if present)
+                page_path = permalink.lstrip('/')
+                if page_path.endswith('/'):
+                    page_output = output_path / page_path / 'index.html'
+                else:
+                    page_output = output_path / f"{page_path}.html"
+            else:
+                # Use filename
+                page_output = output_path / f"{page_file.stem}.html"
+            
+            # Create directory if needed
+            page_output.parent.mkdir(parents=True, exist_ok=True)
+            
+            # Write page
+            with open(page_output, 'w') as f:
+                f.write(html)
+            
+            pages_built += 1
+        
+        if verbose and pages_built > 0:
+            print(f"✅ Built {pages_built} documentation pages")
