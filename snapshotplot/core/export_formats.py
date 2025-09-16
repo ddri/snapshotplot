@@ -197,7 +197,7 @@ class MarkdownExportFormat(ExportFormat):
         front_matter = {
             'title': context.metadata.get('function_name', 'Code Snapshot'),
             'date': context.metadata.get('date'),
-            'author': context.metadata.get('author'),
+            'author': context.metadata.get('author') or context.author,
             'tags': context.metadata.get('tags', []),
             'filename': context.metadata.get('filename'),
             'timestamp': context.timestamp

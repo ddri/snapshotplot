@@ -5,77 +5,58 @@ Quick test script to verify snapshotplot installation and basic functionality.
 
 import sys
 import os
+import pytest
 
 def test_imports():
     """Test that all modules can be imported."""
     print("Testing imports...")
     
-    try:
-        from snapshotplot import snapshot, SnapshotContext
-        print("✅ Main package imports successful")
-    except ImportError as e:
-        print(f"❌ Main package import failed: {e}")
-        return False
+    # Main package imports
+    from snapshotplot import snapshot, SnapshotContext  # noqa: F401
+    print("✅ Main package imports successful")
     
-    try:
-        from snapshotplot.core.timestamp import get_timestamp
-        from snapshotplot.core.code_capture import get_calling_info
-        from snapshotplot.core.file_manager import create_output_directory
-        from snapshotplot.core.html_writer import generate_html
-        from snapshotplot.core.utils import save_current_plot
-        print("✅ All submodules import successful")
-    except ImportError as e:
-        print(f"❌ Submodule import failed: {e}")
-        return False
-    
-    return True
+    # Submodule imports
+    from snapshotplot.core.timestamp import get_timestamp  # noqa: F401
+    from snapshotplot.core.code_capture import get_calling_info  # noqa: F401
+    from snapshotplot.core.file_manager import create_output_directory  # noqa: F401
+    from snapshotplot.core.html_writer import generate_html  # noqa: F401
+    from snapshotplot.core.utils import save_current_plot  # noqa: F401
+    print("✅ All submodules import successful")
 
 
 def test_basic_functionality():
     """Test basic functionality without matplotlib."""
     print("\nTesting basic functionality...")
     
-    try:
-        from snapshotplot.core.timestamp import get_timestamp, reset_timestamp
-        from snapshotplot.core.code_capture import get_calling_info
-        
-        # Test timestamp
-        reset_timestamp()
-        timestamp = get_timestamp()
-        print(f"✅ Timestamp generation: {timestamp}")
-        
-        # Test code capture
-        info = get_calling_info()
-        print(f"✅ Code capture: {info['function_name']} in {info['filename']}")
-        
-        return True
-    except Exception as e:
-        print(f"❌ Basic functionality test failed: {e}")
-        return False
+    from snapshotplot.core.timestamp import get_timestamp, reset_timestamp
+    from snapshotplot.core.code_capture import get_calling_info
+    
+    # Test timestamp
+    reset_timestamp()
+    timestamp = get_timestamp()
+    print(f"✅ Timestamp generation: {timestamp}")
+    assert isinstance(timestamp, str)
+    assert len(timestamp) >= 15
+    
+    # Test code capture
+    info = get_calling_info()
+    print(f"✅ Code capture: {info['function_name']} in {info['filename']}")
+    assert 'function_name' in info and 'filename' in info and 'source_code' in info
 
 
 def test_matplotlib_integration():
     """Test matplotlib integration if available."""
     print("\nTesting matplotlib integration...")
     
-    try:
-        import matplotlib
-        import matplotlib.pyplot as plt
-        print(f"✅ Matplotlib available: {matplotlib.__version__}")
-        
-        # Test basic plot creation
-        plt.figure()
-        plt.plot([1, 2, 3], [1, 4, 9])
-        plt.close()  # Clean up
-        print("✅ Basic matplotlib functionality works")
-        
-        return True
-    except ImportError:
-        print("⚠️  Matplotlib not available - skipping integration test")
-        return True
-    except Exception as e:
-        print(f"❌ Matplotlib integration test failed: {e}")
-        return False
+    matplotlib = pytest.importorskip("matplotlib")
+    import matplotlib.pyplot as plt
+    print(f"✅ Matplotlib available: {matplotlib.__version__}")
+    
+    # Test basic plot creation
+    plt.figure()
+    plt.plot([1, 2, 3], [1, 4, 9])
+    plt.close()  # Clean up
+    print("✅ Basic matplotlib functionality works")
 
 
 def test_dependencies():
@@ -88,21 +69,16 @@ def test_dependencies():
         ('pygments', 'pygments')
     ]
     
-    all_available = True
-    
     for package_name, import_name in dependencies:
         try:
             __import__(import_name)
             print(f"✅ {package_name} available")
         except ImportError:
-            print(f"❌ {package_name} not available")
-            all_available = False
-    
-    return all_available
+            pytest.fail(f"{package_name} not available")
 
 
 def main():
-    """Run all tests."""
+    """Run all tests as a script (optional)."""
     print("🧪 SnapshotPlot Installation Test")
     print("=" * 40)
     
@@ -115,7 +91,15 @@ def main():
     
     results = []
     for test in tests:
-        results.append(test())
+        try:
+            test()
+            results.append(True)
+        except pytest.skip.Exception:
+            print("⏭️  Skipped a test")
+            results.append(True)
+        except Exception as e:
+            print(f"❌ Test failed: {e}")
+            results.append(False)
     
     print("\n" + "=" * 40)
     print("📊 Test Results:")

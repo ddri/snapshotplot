@@ -85,15 +85,15 @@ class SnapshotMagics(Magics):
     @argument('--collection', help='Collection name for organizing plots')
     @argument('--tags', nargs='*', help='Tags for categorizing plots')
     @argument('--description', help='Description for the plot')
-    @line_magic
-    def snapshot(self, line):
+    @line_magic("snapshot")
+    def snapshot_line(self, line):
         """
         Line magic to snapshot the previous cell's output.
         
         Usage:
             %snapshot -t "My Plot" -a "John Doe"
         """
-        args = parse_argstring(self.snapshot, line)
+        args = parse_argstring(self.snapshot_line, line)
         
         # Get the last executed cell
         ipython = get_ipython()
@@ -125,8 +125,8 @@ class SnapshotMagics(Magics):
     @argument('--collection', help='Collection name for organizing plots')
     @argument('--tags', nargs='*', help='Tags for categorizing plots')
     @argument('--description', help='Description for the plot')
-    @cell_magic
-    def snapshot(self, line, cell):
+    @cell_magic("snapshot")
+    def snapshot_cell(self, line, cell):
         """
         Cell magic to snapshot the current cell.
         
@@ -136,7 +136,7 @@ class SnapshotMagics(Magics):
             plt.plot([1, 2, 3], [1, 4, 9])
             plt.show()
         """
-        args = parse_argstring(self.snapshot, line)
+        args = parse_argstring(self.snapshot_cell, line)
         
         # Execute the cell first
         ipython = get_ipython()
@@ -230,7 +230,7 @@ class SnapshotMagics(Magics):
 
 def load_ipython_extension(ipython):
     """Load the IPython extension."""
-    ipython.register_magic_function(SnapshotMagics(ipython).snapshot, 'line_cell')
+    ipython.register_magics(SnapshotMagics)
 
 
 def unload_ipython_extension(ipython):

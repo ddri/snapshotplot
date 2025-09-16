@@ -54,7 +54,9 @@ class SnapshotContext:
         # New enhancement parameters
         backend: Optional[str] = None,
         export_formats: Optional[list] = None,
-        enable_search: bool = False
+        enable_search: bool = False,
+        # Plot saving options
+        plot_formats: Optional[list] = None
     ):
         """
         Initialize the snapshot context manager.
@@ -93,7 +95,8 @@ class SnapshotContext:
             'auto_deploy': auto_deploy,
             'backend': backend,
             'export_formats': export_formats or ['html'],
-            'enable_search': enable_search
+'enable_search': enable_search,
+            'plot_formats': plot_formats
         }
         
         # Validate and merge with defaults
@@ -104,6 +107,7 @@ class SnapshotContext:
         self.timestamp = None
         self.calling_info = None
         self.file_paths = None
+        self._last_plot_data = None  # Store last captured plot data for downstream steps
         
         # Initialize backend registry
         self.backend_registry = BackendRegistry()
@@ -154,6 +158,7 @@ class SnapshotContext:
         
         # Save plot if available
         plot_data = self._save_plot()
+        self._last_plot_data = plot_data
         
         # Create documentation in all requested formats
         self._create_documentation(plot_data)
@@ -193,10 +198,12 @@ class SnapshotContext:
                 return {'saved': False, 'files': []}
             
             # Save plots in the configured formats
+            # Determine plot formats: user-configured or backend default
+            formats = self.config.get('plot_formats') or ['png']
             plot_files = backend.save_plots(
                 output_dir=os.path.dirname(self.file_paths['plot']),
                 timestamp=self.timestamp,
-                formats=['png']  # Default format for backward compatibility
+                formats=formats
             )
             
             return {'saved': True, 'files': plot_files}
@@ -323,7 +330,7 @@ class SnapshotContext:
             import shutil
             
             # Copy plot files
-            plot_files = plot_data.get('files', [])
+            plot_files = (self._last_plot_data or {}).get('files', [])
             if plot_files:
                 # Use the first plot file for backward compatibility
                 plot_file = plot_files[0]
@@ -375,7 +382,7 @@ class SnapshotContext:
     def _auto_build(self):
         """Automatically build the static site."""
         try:
-            from .site_generator import SiteGenerator
+            from ..site.site_generator import SiteGenerator
             site_dir = self.config.get('site', '.')
             generator = SiteGenerator(site_dir)
             generator.build()

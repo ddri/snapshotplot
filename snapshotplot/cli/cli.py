@@ -152,15 +152,18 @@ def serve(port: int, host: str):
     generator = SiteGenerator('.')
     generator.build()
     
-    # Start server
+    # Start server rooted at docs without chdir side-effects
     import http.server
     import socketserver
     import threading
     import webbrowser
+    from functools import partial
     
-    os.chdir('docs')
-    
+    docs_dir = Path('docs').resolve()
+
     class Handler(http.server.SimpleHTTPRequestHandler):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, directory=str(docs_dir), **kwargs)
         def end_headers(self):
             self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate')
             self.send_header('Pragma', 'no-cache')
@@ -170,7 +173,7 @@ def serve(port: int, host: str):
     with socketserver.TCPServer((host, port), Handler) as httpd:
         url = f"http://{host}:{port}"
         click.echo(f"🚀 Serving plot site at {url}")
-        click.echo(f"📁 Serving from: {Path.cwd()}")
+        click.echo(f"📁 Serving from: {docs_dir}")
         click.echo(f"⏹️  Press Ctrl+C to stop")
         
         # Open browser
@@ -324,9 +327,6 @@ def _create_assets(site_path: Path):
     from ..core.templates import get_template
     templates = get_template('scientific')
     css = templates['assets/style.css']
-    
-    with open(site_path / 'assets' / 'style.css', 'w') as f:
-        f.write(css)
     
     with open(site_path / 'assets' / 'style.css', 'w') as f:
         f.write(css)

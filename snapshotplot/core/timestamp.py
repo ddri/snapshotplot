@@ -60,5 +60,9 @@ def reset_timestamp() -> None:
 
 # Aliases for compatibility with previous code
 get_timestamp = get_current_timestamp
-generate_new_timestamp = get_current_timestamp
-get_datetime = get_current_datetime 
+
+def generate_new_timestamp() -> str:
+    """Generate and set a new global timestamp for a new snapshot run."""
+    return generate_timestamp()
+
+get_datetime = get_current_datetime
