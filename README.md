@@ -63,7 +63,7 @@ pip install snapshotplot[site]
 pip install snapshotplot[all]
 
 # Optional feature-specific installs:
-pip install snapshotplot[search]    # Add search functionality
+# Note: Search uses built-in SQLite/FTS5 and requires no extra install
 pip install snapshotplot[academic]  # Add LaTeX/PDF export for academic use
 ```
 
@@ -145,12 +145,13 @@ The output includes:
     
     # Visualization backend
     backend="matplotlib",                 # Backend: 'matplotlib', 'plotly', 'altair'
+    plot_formats=["png"],                  # Plot file formats to save per backend (e.g., ['png','svg'] or ['html','png'] for Plotly)
     
     # Export formats
     export_formats=["html", "pdf"],       # Formats: 'html', 'pdf', 'markdown', 'latex', 'jupyter'
     
     # Search and organization
-    enable_search=True,                   # Enable search indexing
+    enable_search=True,                   # Enable search indexing (built-in SQLite/FTS5; no extra install needed)
     tags=["analysis", "research"],        # Organization tags
     
     # Static site integration
@@ -521,8 +522,8 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 - **🔧 Plugin Architecture**: Extensible backend system for new visualization libraries
 
 ```python
-# Use different visualization backends
-@snapshot(backend='plotly', title='Interactive Analysis')
+# Use different visualization backends and specify saved plot formats
+@snapshot(backend='plotly', plot_formats=['html','png'], title='Interactive Analysis')
 def create_interactive_plot():
     import plotly.graph_objects as go
     fig = go.Figure(data=go.Bar(x=['A', 'B', 'C'], y=[1, 3, 2]))
@@ -548,7 +549,7 @@ def research_analysis():
 ```
 
 ### Search & Discovery
-- **🔍 Full-Text Search**: Search across code content, titles, descriptions
+- **🔍 Full-Text Search**: Search across code content, titles, descriptions (no extra install required; uses SQLite/FTS5)
 - **🏷️ Tag-Based Organization**: Categorize and filter analyses
 - **📈 Usage Analytics**: Track patterns and insights over time
 - **🗃️ SQLite Database**: Local, fast, privacy-preserving search

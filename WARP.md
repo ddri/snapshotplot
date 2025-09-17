@@ -10,7 +10,7 @@ Summary
 Environment
 - Python >= 3.9
 - Install for development: pip install -e ".[dev]"
-- Optional extras: [jupyter], [site], [cli], [search], [academic], [all]
+- Optional extras: [jupyter], [site], [cli], [academic], [all]
 
 Core commands
 - Setup (recommended on macOS)
@@ -41,6 +41,7 @@ Core commands
   - Decorator: from snapshotplot import snapshot; @snapshot(title="My Plot")
   - Context manager: from snapshotplot import snapshot; with snapshot(title="My Plot"): ...
   - Jupyter magics: %load_ext snapshotplot then use %%snapshot ...
+  - Plot formats: @snapshot(backend='plotly', plot_formats=['html','png']) to control saved plot files per backend
 
 Key architecture
 - snapshotplot/core
@@ -98,7 +99,8 @@ Key architecture
 Conventions and defaults
 - Default snapshot output root: snapshots/ (created in CWD)
 - Snapshot directory: snapshots/snapshot_<source_filename_without_ext>/
-- Default export_formats=['html'] unless overridden; set enable_search=True to index snapshots
+- Default export_formats=['html'] unless overridden; set enable_search=True to index snapshots (no extra install needed)
+- Plot file formats: default ['png']; configure via plot_formats per backend
 - CLI build output: docs/
 
 References from README.md (essentials)
